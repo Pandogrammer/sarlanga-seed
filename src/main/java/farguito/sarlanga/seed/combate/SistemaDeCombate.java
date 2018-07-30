@@ -12,52 +12,77 @@ import org.springframework.web.context.annotation.SessionScope;
 import farguito.sarlanga.seed.Jugador;
 import farguito.sarlanga.seed.acciones.Accion;
 
-@RestController
-@SessionScope
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-public class SistemaDeCombate {
+public class SistemaDeCombate extends Thread {
 	
 	PersonajeDeCombate personajeActivo;
 	
 	List<PersonajeDeCombate> personajes = new ArrayList<>();
-	List<Aliado> aliados = new ArrayList<>();
-	List<Enemigo> enemigos = new ArrayList<>();
+	
+	List<PersonajeDeCombate> turnos = new ArrayList<>(); //TODO: hacerlo mejor, no necesito TODO el personaje, solo id y enfriamiento, o armarme un map<id, pj> para targetear
 	
 	EstadoDeCombate estado = EstadoDeCombate.EN_ESPERA;
 	
-	@GetMapping("/iniciar")
-	public void iniciar(
-			List<Aliado> aliados,
-			List<Enemigo> enemigos
-			) {
-
-		personajes.addAll(aliados);
-		personajes.addAll(enemigos);
-		personajes.sort((pj1, pj2) -> pj1.velocidad - pj2.velocidad);
+	
+	public SistemaDeCombate(List<Aliado> aliados,List<Enemigo> enemigos) {
 		
-		aliados.addAll(aliados);
-		enemigos.addAll(enemigos);
+		aliados.stream().forEach(p -> {
+			p.setId(personajes.size());
+			personajes.add(p);
+			turnos.add(p);
+		});
 		
-		personajeActivo = personajes.get(0); 
+		enemigos.stream().forEach(p -> {
+			p.setId(personajes.size());
+			personajes.add(p);
+			turnos.add(p);
+		});		
+		
+		turnos.sort((pj1, pj2) -> pj2.getVelocidad() - pj1.getVelocidad());
+		
+		personajeActivo = turnos.get(0); 
 		if(personajeActivo instanceof Aliado)
 			estado = EstadoDeCombate.TURNO_JUGADOR;
 		else
 			estado = EstadoDeCombate.TURNO_ENEMIGO;
-		
 	}
 	
-	
-	public void accionar(
-			PersonajeDeCombate objetivo,
-			Accion accion
-			) {
+	public String accionar(Integer objetivoId, Accion accion) {
 		estado = EstadoDeCombate.ANIMACION;
 		
-		accion.ejecutar(personajeActivo, objetivo);		
+		String mensaje = accion.ejecutar(personajeActivo, personajes.get(objetivoId));
+		System.out.println(mensaje);
 		
 		personajeActivo = null;
 		estado = EstadoDeCombate.EN_ESPERA;
+		
+		return mensaje;
 	}
+
+	boolean prendido = true;
+	int segundosPausa = 100; //10
+	public void seguir() {
+		System.out.println("seguir");
+		prendido = true;
+	}
+	public void pausar() {
+		System.out.println("pausar");
+		prendido = false;
+	}
+	
+	//websocket
+	public void run() {
+		try {
+			while(true) {
+				if(prendido) {
+					actualizar();
+					Thread.sleep(segundosPausa);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public void actualizar() {
 		switch(estado) {
@@ -70,27 +95,59 @@ public class SistemaDeCombate {
 	}
 	
 	private void avanzarTurnos() {
+		turnos.sort((pj1, pj2) -> pj2.getEnfriamiento() - pj1.getEnfriamiento());
 		int i = 0;
-		while(personajeActivo == null && i < personajes.size()) {
-			if(personajes.get(i).enfriamiento <= 0)
-				personajeActivo = personajes.get(i);
-			else {
-				personajes.get(i).descansar();
-				i++;
+		PersonajeDeCombate p = null;
+		while(personajeActivo == null && i < turnos.size()) {
+			p = turnos.get(i);
+			
+			if(p.isVivo()) {
+				if(p.getEnfriamiento() <= 0) {
+					personajeActivo = p;
+					
+					if(personajeActivo instanceof Aliado) {
+						estado = EstadoDeCombate.TURNO_JUGADOR;
+						System.out.println("TURNO_JUGADOR");
+					} else {
+						estado = EstadoDeCombate.TURNO_ENEMIGO;
+						System.out.println("TURNO_ENEMIGO");
+					}
+					
+				} else {
+					p.descansar();
+				}
 			}
+			
+			i++;
 		}
-				
-		if(personajeActivo instanceof Aliado)
-			estado = EstadoDeCombate.TURNO_JUGADOR;
-		else
-			estado = EstadoDeCombate.TURNO_ENEMIGO;
+		
 	}
 	
 	private void turnoEnemigo() {
+		System.out.println("turno enemigo");
 		Enemigo enemigo = (Enemigo) personajeActivo;
-		enemigo.decidir(personajes);
-		accionar(enemigo.getEstrategia().getObjetivo(), enemigo.getEstrategia().getAccion());
+		enemigo.getEstrategia().preparar(personajes);
+		accionar(enemigo.getEstrategia().getObjetivo().getId(), enemigo.getEstrategia().getAccion());
 	}
+
+	public List<PersonajeDeCombate> getPersonajes() {
+		return personajes;
+	}
+
+	public PersonajeDeCombate getPersonajeActivo() {
+		return personajeActivo;
+	}
+
+	public EstadoDeCombate getEstado() {
+		return estado;
+	}
+	
+	public boolean isTurnoJugador() {
+		return estado.equals(EstadoDeCombate.TURNO_JUGADOR);
+	}
+	
+	
+	
 	
 	
 }

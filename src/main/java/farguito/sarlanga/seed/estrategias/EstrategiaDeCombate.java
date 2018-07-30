@@ -6,11 +6,12 @@ import farguito.sarlanga.seed.acciones.Accion;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 
 public abstract class EstrategiaDeCombate {
-	
+
+	private PersonajeDeCombate origen;
 	private PersonajeDeCombate objetivo;
 	private Accion accion;
 	
-	public abstract void accionar(List<PersonajeDeCombate> personajes);
+	public abstract void preparar(List<PersonajeDeCombate> personajes);
 
 	public PersonajeDeCombate getObjetivo() {
 		return objetivo;
@@ -27,6 +28,16 @@ public abstract class EstrategiaDeCombate {
 	public void setAccion(Accion accion) {
 		this.accion = accion;
 	}
+
+	public PersonajeDeCombate getOrigen() {
+		return origen;
+	}
+
+	public void setOrigen(PersonajeDeCombate origen) {
+		this.origen = origen;
+	}
+	
+	
 		
 	
 }

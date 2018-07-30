@@ -10,3 +10,7 @@ public class SarlangaSeed {
 		SpringApplication.run(SarlangaSeed.class, args);
 	}
 }
+
+/* TODO: le gran todowski
+	+ armar un logger piola
+*/
