@@ -2,6 +2,7 @@ package farguito.sarlanga.seed;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class SarlangaSeed {
@@ -14,3 +15,4 @@ public class SarlangaSeed {
 /* TODO: le gran todowski
 	+ armar un logger piola
 */
+

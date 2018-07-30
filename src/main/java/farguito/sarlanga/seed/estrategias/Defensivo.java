@@ -25,7 +25,7 @@ public class Defensivo extends EstrategiaDeCombate {
 		}
 		
 		//preparo la accion		
-		for(getOrigen().get)
+		//for(getOrigen().get)
 		this.setAccion(new Golpe());
 		this.setObjetivo(objetivo);
 	}

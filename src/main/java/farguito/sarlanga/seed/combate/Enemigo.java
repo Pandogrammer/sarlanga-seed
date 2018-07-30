@@ -10,7 +10,7 @@ public class Enemigo extends PersonajeDeCombate {
 	
 	EstrategiaDeCombate estrategia;
 
-	public Enemigo(Personaje pj, EstrategiaDeCombate estrategia, List<Accion> acciones) {
+	public Enemigo(Personaje pj, List<Accion> acciones, EstrategiaDeCombate estrategia) {
 		super(pj, acciones);
 		this.estrategia = estrategia;
 	}	

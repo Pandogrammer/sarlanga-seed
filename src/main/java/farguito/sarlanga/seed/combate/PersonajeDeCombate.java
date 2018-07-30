@@ -11,7 +11,6 @@ public abstract class PersonajeDeCombate {
 	private String nombre;
 	private int vida;
 	private int vidaMax;
-	private int mana;
 	private int velocidad;
 	private int enfriamiento = 0;
 	private int daño;
@@ -19,11 +18,10 @@ public abstract class PersonajeDeCombate {
 	private List<Accion> acciones;
 	
 	public PersonajeDeCombate(Personaje pj, List<Accion> acciones) {
-		this.daño = pj.getDaño();
+		this.daño = pj.getAtaque();
 		this.nombre = pj.getNombre();
 		this.vida = pj.getVida();
 		this.vidaMax = pj.getVida();
-		this.mana = pj.getMana();
 		this.velocidad = pj.getVelocidad();
 		this.acciones = acciones;
 	}
@@ -66,15 +64,7 @@ public abstract class PersonajeDeCombate {
 	public void setVida(int vida) {
 		this.vida = vida;
 	}
-
-	public int getMana() {
-		return mana;
-	}
-
-	public void setMana(int mana) {
-		this.mana = mana;
-	}
-
+	
 	public int getVelocidad() {
 		return velocidad;
 	}
