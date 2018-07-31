@@ -32,13 +32,14 @@ import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 public class CombateController {
 
 	@Autowired
-	private FabricaDeCriaturas personajes;
+	private FabricaDeCriaturas fabCriaturas;
 	
 	@Autowired
-	private FabricaDeAcciones acciones;
+	private FabricaDeAcciones fabAcciones;
 	
 	@Autowired
 	private RepositorioDeNiveles niveles;
+	
 	
 	private SistemaDeCombate combate;
 	
@@ -104,11 +105,11 @@ public class CombateController {
 			
 			pjs.stream().forEach(pj -> {
 				
-				Personaje pjPersonaje = this.personajes.crear(pj.getPersonaje());
+				Personaje pjPersonaje = this.fabCriaturas.crear(pj.getCriatura());
 				List<Accion> pjAcciones = new ArrayList<>();
 				
 				pj.getAcciones().stream().forEach(a -> {
-					pjAcciones.add(acciones.crear(a));
+					pjAcciones.add(fabAcciones.crear(a));
 				});
 				
 				

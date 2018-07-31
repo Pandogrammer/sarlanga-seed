@@ -1,6 +1,6 @@
 package farguito.sarlanga.seed.acciones;
 
-public enum TipoDeAccion {
+public enum TiposDeAccion {
 	
 	OFENSIVO
   , DEFENSIVO

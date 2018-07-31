@@ -9,7 +9,8 @@ public class Golpe extends Accion {
 	private int cansancio = 100;
 
 	public Golpe() {
-		tipos.add(TipoDeAccion.OFENSIVO);
+		super();
+		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	
 	public String ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino) {

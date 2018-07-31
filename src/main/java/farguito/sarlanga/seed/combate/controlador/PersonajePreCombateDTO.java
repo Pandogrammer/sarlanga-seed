@@ -7,14 +7,14 @@ import farguito.sarlanga.seed.criaturas.Criaturas;
 
 public class PersonajePreCombateDTO {
 	
-	private Criaturas personaje;
+	private Criaturas criatura;
 	private List<Acciones> acciones;
 	//List<mejoras>
 	
 	public PersonajePreCombateDTO() {}
 
-	public Criaturas getPersonaje() {
-		return personaje;
+	public Criaturas getCriatura() {
+		return criatura;
 	}
 
 	public List<Acciones> getAcciones() {

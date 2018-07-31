@@ -9,7 +9,8 @@ public class Arañazo extends Accion {
 	private int cansancio = 65;
 
 	public Arañazo() {
-		tipos.add(TipoDeAccion.OFENSIVO);
+		super();
+		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	
 	public String ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino) {

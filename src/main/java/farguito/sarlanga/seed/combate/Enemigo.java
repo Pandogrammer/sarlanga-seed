@@ -11,8 +11,8 @@ public class Enemigo extends PersonajeDeCombate {
 	EstrategiaDeCombate estrategia;
 
 	public Enemigo(Personaje pj, List<Accion> acciones, EstrategiaDeCombate estrategia) {
-		super(pj, acciones);
-		this.estrategia = estrategia;
+		super(pj, acciones);		
+		setEstrategia(estrategia);
 	}	
 	
 	
@@ -22,6 +22,7 @@ public class Enemigo extends PersonajeDeCombate {
 
 	public void setEstrategia(EstrategiaDeCombate estrategia) {
 		this.estrategia = estrategia;
+		this.estrategia.setOrigen(this);
 	}
 	
 	

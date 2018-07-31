@@ -31,6 +31,10 @@ public class RepositorioDeNiveles {
 	
 	Map<Integer, Nivel> niveles = new HashMap<>();
 	
+	
+	public RepositorioDeNiveles() {}
+	
+	
 	@PostConstruct
 	private void init() {
 		List<PersonajeDeCombate> pjs = new ArrayList<>();
@@ -44,10 +48,18 @@ public class RepositorioDeNiveles {
 		pjs.add(new Aliado(fabCriaturas.crear(Criaturas.RATA), acciones));
 		
 		
-		niveles.put(niveles.size(), new Nivel(pjs));
+		agregar(pjs);
 	}
 	
 	public Nivel get(Integer id) {
 		return niveles.get(id);
+	}
+	
+	public void pisar(Integer id, List<PersonajeDeCombate> pjs){
+		niveles.put(id, new Nivel(pjs));
+	}
+	
+	public void agregar(List<PersonajeDeCombate> pjs) {
+		niveles.put(niveles.size()+1, new Nivel(pjs));
 	}
 }

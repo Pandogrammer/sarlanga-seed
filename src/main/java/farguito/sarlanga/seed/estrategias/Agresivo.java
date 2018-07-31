@@ -2,7 +2,9 @@ package farguito.sarlanga.seed.estrategias;
 
 import java.util.List;
 
+import farguito.sarlanga.seed.acciones.Accion;
 import farguito.sarlanga.seed.acciones.Golpe;
+import farguito.sarlanga.seed.acciones.TiposDeAccion;
 import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 
@@ -22,8 +24,16 @@ public class Agresivo extends EstrategiaDeCombate {
 			
 			i++;			
 		}
-		
-		this.setAccion(new Golpe());
+
+		//preparo la accion		
+		Accion accionElegida = null;
+		for(Accion accion : getOrigen().getAcciones()) {
+			if( accion.getTipos().contains(TiposDeAccion.OFENSIVO)
+			&& (accionElegida == null || accion.getCansancio() < accionElegida.getCansancio())	) {
+					accionElegida = accion;
+			}
+		}
+		this.setAccion(accionElegida);
 		this.setObjetivo(objetivo);
 	}
 	

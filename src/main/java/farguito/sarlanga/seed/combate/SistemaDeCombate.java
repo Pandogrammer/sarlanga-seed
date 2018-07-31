@@ -124,9 +124,8 @@ public class SistemaDeCombate extends Thread {
 		
 	}
 	
-	private void turnoEnemigo() {
-		System.out.println("turno enemigo");
 		Enemigo enemigo = (Enemigo) personajeActivo;
+		private void turnoEnemigo() {
 		enemigo.getEstrategia().preparar(personajes);
 		accionar(enemigo.getEstrategia().getObjetivo().getId(), enemigo.getEstrategia().getAccion());
 	}
