@@ -13,7 +13,7 @@ public class Golpe extends Accion {
 	}
 	
 	public String ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino) {
-		daño = Math.round(origen.getDaño() * multiplicador);
+		daño = Math.round(origen.getAtaque() * multiplicador);
 		
 		destino.dañar(daño);
 		origen.cansar(cansancio);

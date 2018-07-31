@@ -2,25 +2,23 @@ package farguito.sarlanga.seed.combate.controlador;
 
 import java.util.List;
 
+import farguito.sarlanga.seed.acciones.Acciones;
+import farguito.sarlanga.seed.criaturas.Criaturas;
+
 public class PersonajePreCombateDTO {
 	
-	private Long idPersonaje;
-	private List<Integer> idAcciones;
+	private Criaturas personaje;
+	private List<Acciones> acciones;
 	//List<mejoras>
 	
 	public PersonajePreCombateDTO() {}
-	
-	public Long getIdPersonaje() {
-		return idPersonaje;
+
+	public Criaturas getPersonaje() {
+		return personaje;
 	}
-	public void setIdPersonaje(Long idPersonaje) {
-		this.idPersonaje = idPersonaje;
-	}
-	public List<Integer> getIdAcciones() {
-		return idAcciones;
-	}
-	public void setIdAcciones(List<Integer> idAcciones) {
-		this.idAcciones = idAcciones;
+
+	public List<Acciones> getAcciones() {
+		return acciones;
 	}
 	
 	

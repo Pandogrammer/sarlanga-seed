@@ -2,24 +2,29 @@ package farguito.sarlanga.seed.combate;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import farguito.sarlanga.seed.acciones.Accion;
+import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
 
+@JsonInclude(Include.NON_NULL)
 public abstract class PersonajeDeCombate {
 	
 	private Integer id;
-	private String nombre;
+	private Personaje pjBase;
 	private int vida;
 	private int vidaMax;
 	private int velocidad;
 	private int enfriamiento = 0;
-	private int daño;
+	private int ataque;
 	private boolean vivo = true;
 	private List<Accion> acciones;
 	
 	public PersonajeDeCombate(Personaje pj, List<Accion> acciones) {
-		this.daño = pj.getAtaque();
-		this.nombre = pj.getNombre();
+		this.pjBase = pj;
+		this.ataque = pj.getAtaque();		
 		this.vida = pj.getVida();
 		this.vidaMax = pj.getVida();
 		this.velocidad = pj.getVelocidad();
@@ -41,12 +46,12 @@ public abstract class PersonajeDeCombate {
 		enfriamiento += cansancio;
 	}
 	
-	public int getDaño() {
-		return daño;
+	public int getAtaque() {
+		return ataque;
 	}
 
-	public void setDaño(int daño) {
-		this.daño = daño;
+	public void setAtaque(int ataque) {
+		this.ataque = ataque;
 	}
 
 	public int getEnfriamiento() {
@@ -82,11 +87,7 @@ public abstract class PersonajeDeCombate {
 	}
 
 	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		return pjBase.getRaza().toString();
 	}
 
 	public Integer getId() {
@@ -113,6 +114,9 @@ public abstract class PersonajeDeCombate {
 		this.acciones = acciones;
 	}
 
+	public Personaje getPjBase() {
+		return pjBase;
+	}	
 	
 	
 }

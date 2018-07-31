@@ -3,8 +3,6 @@ package farguito.sarlanga.seed.combate.controlador;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.SessionScope;
 
 import farguito.sarlanga.seed.Respuesta;
-import farguito.sarlanga.seed.acciones.Arañazo;
+import farguito.sarlanga.seed.acciones.Accion;
+import farguito.sarlanga.seed.acciones.FabricaDeAcciones;
 import farguito.sarlanga.seed.acciones.Golpe;
-import farguito.sarlanga.seed.acciones.RepositorioDeAcciones;
 import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.Enemigo;
+import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 import farguito.sarlanga.seed.combate.SistemaDeCombate;
+import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
-import farguito.sarlanga.seed.criaturas.RepositorioDePersonajes;
 import farguito.sarlanga.seed.estrategias.Agresivo;
+import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 
 @RestController
 @SessionScope
@@ -32,37 +32,29 @@ import farguito.sarlanga.seed.estrategias.Agresivo;
 public class CombateController {
 
 	@Autowired
-	private RepositorioDePersonajes personajes;
+	private FabricaDeCriaturas personajes;
 	
-	private RepositorioDeAcciones acciones;
+	@Autowired
+	private FabricaDeAcciones acciones;
+	
+	@Autowired
+	private RepositorioDeNiveles niveles;
 	
 	private SistemaDeCombate combate;
 	
-	
-	@PostConstruct
-	private void init() {
-		personajes.save(new Personaje("Rata", 30, 10, 10, 1));
-		personajes.save(new Personaje("Golem", 50, 6, 15, 1));
 		
-		acciones = new RepositorioDeAcciones();
-		
-		acciones.save(new Arañazo());
-		acciones.save(new Golpe());
-		
-	}
-	
 	@GetMapping("partida")
 	public Respuesta personajes(){
 		Respuesta respuesta = new Respuesta();
 		try {
-			List<PersonajeDTO> aliados = new ArrayList<>();
-			List<PersonajeDTO> enemigos = new ArrayList<>();
+			List<PersonajeDeCombate> aliados = new ArrayList<>();
+			List<PersonajeDeCombate> enemigos = new ArrayList<>();
 			
 			combate.getPersonajes().stream().forEach(p -> {
 				if(p instanceof Aliado) {
-					aliados.add(new PersonajeDTO(p));
+					aliados.add(p);
 				} else {
-					enemigos.add(new PersonajeDTO(p));
+					enemigos.add(p);
 				}
 			});
 			
@@ -103,22 +95,27 @@ public class CombateController {
 	
 	@PostMapping("iniciar")
 	public Respuesta iniciar(
-			@RequestBody List<PersonajePreCombateDTO> personajes,
-			@RequestParam Long nivel
+			@RequestBody List<PersonajePreCombateDTO> pjs,
+			@RequestParam Integer nivel
 			) {
 		Respuesta respuesta = new Respuesta();
 		try {
 			List<Aliado> aliados = new ArrayList<>();
 			
-			personajes.stream().forEach(p -> {
-				this.personajes.findById(p.getIdPersonaje());
+			pjs.stream().forEach(pj -> {
 				
-				aliados.add(new Aliado(
-						this.personajes.findById(p.getIdPersonaje()).get()
-					  , this.acciones.findById(p.getIdAcciones())));
+				Personaje pjPersonaje = this.personajes.crear(pj.getPersonaje());
+				List<Accion> pjAcciones = new ArrayList<>();
+				
+				pj.getAcciones().stream().forEach(a -> {
+					pjAcciones.add(acciones.crear(a));
+				});
+				
+				
+				aliados.add(new Aliado(pjPersonaje, pjAcciones));
 			});
 			
-			combate = new SistemaDeCombate(aliados, buscarEnemigos(nivel));		
+			combate = new SistemaDeCombate(aliados, crearEnemigos(nivel));		
 	
 			combate.start();
 			respuesta.agregarMensaje("iniciar");
@@ -164,19 +161,8 @@ public class CombateController {
 	
 	
 	//combate service
-	private List<Enemigo> buscarEnemigos(Long nivel) {
-		//nivel repository
-		List<Enemigo> enemigos = new ArrayList<>();
-		List<Integer> accionesId = new ArrayList<>();
-		accionesId.add(1);
-		
-		enemigos.add(new Enemigo(
-				personajes.findById(nivel).get()
-			  , acciones.findById(accionesId)
-			  , new Agresivo()));
-		
-		
-		return enemigos;
+	private List<Enemigo> crearEnemigos(Integer nivel) {
+		return niveles.get(nivel).getEnemigos();
 	}
 	
 	

@@ -1,37 +1,22 @@
 package farguito.sarlanga.seed.criaturas;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-@Entity
 public class Personaje {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long id;
-	private String nombre;
-	private int vida;
-	private int velocidad;
-	private int ataque;
-	private int nivel;
+	protected Criaturas raza;
+	protected int vida;
+	protected int velocidad;
+	protected int ataque;
+	protected int nivel;	
+	
+	public Personaje() {}
 	
 	
 	
-	public Personaje(String nombre, int vida, int velocidad, int ataque, int nivel) {
-		super();
-		this.nombre = nombre;
-		this.vida = vida;
-		this.velocidad = velocidad;
-		this.ataque = ataque;
-		this.nivel = nivel;
+	public Criaturas getRaza() {
+		return raza;
 	}
-	public String getNombre() {
-		return nombre;
-	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setRaza(Criaturas raza) {
+		this.raza = raza;
 	}
 	public int getVida() {
 		return vida;

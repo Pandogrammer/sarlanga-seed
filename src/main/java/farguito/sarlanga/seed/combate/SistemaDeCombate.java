@@ -18,7 +18,8 @@ public class SistemaDeCombate extends Thread {
 	
 	List<PersonajeDeCombate> personajes = new ArrayList<>();
 	
-	List<PersonajeDeCombate> turnos = new ArrayList<>(); //TODO: hacerlo mejor, no necesito TODO el personaje, solo id y enfriamiento, o armarme un map<id, pj> para targetear
+	//TODO: hacerlo mejor, no necesito TODO el personaje, solo id y enfriamiento, o armarme un map<id, pj> para targetear
+	List<PersonajeDeCombate> turnos = new ArrayList<>(); 
 	
 	EstadoDeCombate estado = EstadoDeCombate.EN_ESPERA;
 	
