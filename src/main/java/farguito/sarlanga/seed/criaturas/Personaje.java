@@ -6,7 +6,7 @@ public class Personaje {
 	protected int vida;
 	protected int velocidad;
 	protected int ataque;
-	protected int nivel;	
+	protected int esencia;	
 	
 	public Personaje() {}
 	
@@ -36,12 +36,11 @@ public class Personaje {
 	public void setAtaque(int ataque) {
 		this.ataque = ataque;
 	}
-	public int getNivel() {
-		return nivel;
+	public int getEsencia() {
+		return esencia;
 	}
-	public void setNivel(int nivel) {
-		this.nivel = nivel;
-	}
+	
+	
 	
 	
 

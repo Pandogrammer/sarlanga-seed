@@ -6,7 +6,7 @@ public class Golem extends Personaje {
 		super();
 		
 		this.raza = Criaturas.GOLEM;
-		this.nivel = 2;
+		this.esencia = 2;
 		
 		this.vida = 70;
 		this.ataque = 18;

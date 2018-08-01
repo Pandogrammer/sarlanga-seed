@@ -8,6 +8,7 @@ import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 public abstract class Accion {
 	
 	protected Acciones accion;
+	protected int esencia;
 	protected int cansancio;
 	protected List<TiposDeAccion> tipos = new ArrayList<>();
 	protected PersonajeDeCombate origen;
@@ -25,6 +26,11 @@ public abstract class Accion {
 	public Acciones getAccion() {
 		return accion;
 	}
+
+	public int getEsencia() {
+		return esencia;
+	}
+	
 	
 	
 	

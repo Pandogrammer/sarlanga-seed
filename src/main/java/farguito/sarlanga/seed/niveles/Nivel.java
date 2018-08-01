@@ -25,8 +25,8 @@ public class Nivel {
 	
 	private List<PersonajeDeCombate> personajes = new ArrayList<>();
 	
-	//cuando gana el jugador
-	public Nivel(List<PersonajeDeCombate> personajes) {
+	public Nivel(int esencia, List<PersonajeDeCombate> personajes) {
+		this.esencia = esencia;
 		this.personajes = personajes;
 	}
 	
@@ -75,6 +75,16 @@ public class Nivel {
 		});
 		return enemigos;
 	}
+
+	public List<PersonajeDeCombate> getPersonajes() {
+		return personajes;
+	}
+
+	public void setPersonajes(List<PersonajeDeCombate> personajes) {
+		this.personajes = personajes;
+	}
+	
+	
 
 	
 	

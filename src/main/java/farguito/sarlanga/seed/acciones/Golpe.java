@@ -6,10 +6,12 @@ public class Golpe extends Accion {
 
 	private int daño;
 	private float multiplicador = 1;
-	private int cansancio = 100;
 
 	public Golpe() {
 		this.accion = Acciones.GOLPE;
+		this.esencia = 0;
+		this.cansancio = 100;
+		
 		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	

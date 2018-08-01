@@ -7,14 +7,18 @@ import farguito.sarlanga.seed.acciones.Accion;
 
 public class SistemaDeCombate extends Thread {
 	
-	PersonajeDeCombate personajeActivo;
+	private PersonajeDeCombate personajeActivo;
 	
-	List<PersonajeDeCombate> personajes = new ArrayList<>();
+	private List<PersonajeDeCombate> personajes = new ArrayList<>();
 	
 	//TODO: hacerlo mejor, no necesito TODO el personaje, solo id y enfriamiento, o armarme un map<id, pj> para targetear
-	List<PersonajeDeCombate> turnos = new ArrayList<>(); 
+	private List<PersonajeDeCombate> turnos = new ArrayList<>(); 
 	
-	EstadoDeCombate estado = EstadoDeCombate.EN_ESPERA;
+	private EstadoDeCombate estado = EstadoDeCombate.EN_ESPERA;
+	
+	//falso logger
+	private List<String> mensajes = new ArrayList<>();
+	
 	
 	
 	public SistemaDeCombate(List<Aliado> aliados,List<Enemigo> enemigos) {
@@ -44,7 +48,7 @@ public class SistemaDeCombate extends Thread {
 		estado = EstadoDeCombate.ANIMACION;
 		
 		String mensaje = accion.ejecutar(personajeActivo, personajes.get(objetivoId));
-		System.out.println(mensaje);
+		log(mensaje);
 		
 		personajeActivo = null;
 		estado = EstadoDeCombate.EN_ESPERA;
@@ -55,11 +59,11 @@ public class SistemaDeCombate extends Thread {
 	boolean prendido = true;
 	int segundosPausa = 100; //10
 	public void seguir() {
-		System.out.println("seguir");
+		log("seguir");
 		prendido = true;
 	}
 	public void pausar() {
-		System.out.println("pausar");
+		log("pausar");
 		prendido = false;
 	}
 	
@@ -99,10 +103,10 @@ public class SistemaDeCombate extends Thread {
 					
 					if(personajeActivo instanceof Aliado) {
 						estado = EstadoDeCombate.TURNO_JUGADOR;
-						System.out.println("TURNO_JUGADOR");
+						log("TURNO_JUGADOR");
 					} else {
 						estado = EstadoDeCombate.TURNO_ENEMIGO;
-						System.out.println("TURNO_ENEMIGO");
+						log("TURNO_ENEMIGO");
 					}
 					
 				} else {
@@ -146,12 +150,21 @@ public class SistemaDeCombate extends Thread {
 
 		if(enemigoVivo && !aliadoVivo) {
 			estado = EstadoDeCombate.DERROTA;
-			System.out.println("DERROTA");
+			log("DERROTA");
 		}
 		else if(aliadoVivo && !enemigoVivo) {
 			estado = EstadoDeCombate.VICTORIA;
-			System.out.println("VICTORIA");
+			log("VICTORIA");
 		}
+	}
+
+	public List<String> getMensajes() {
+		return mensajes;
+	}
+	
+	private void log(String mensaje) {
+		mensajes.add(mensaje);
+		System.out.println(mensaje);		
 	}
 	
 	

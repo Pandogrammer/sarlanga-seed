@@ -1,6 +1,7 @@
 package farguito.sarlanga.seed.combate.controlador;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,14 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.acciones.Accion;
+import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.acciones.FabricaDeAcciones;
 import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.Enemigo;
 import farguito.sarlanga.seed.combate.EstadoDeCombate;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 import farguito.sarlanga.seed.combate.SistemaDeCombate;
+import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
@@ -54,10 +57,29 @@ public class CombateController {
 		try {
 			if(combate.isTurnoJugador()) {
 				respuesta.agregar("personaje",  combate.getPersonajeActivo().getPjBase().getRaza());
+				
 				Respuesta acciones = new Respuesta();
 				for(int i = 0; i < combate.getPersonajeActivo().getAcciones().size(); i++)
-					acciones.agregar(""+i, combate.getPersonajeActivo().getAcciones().get(i).getAccion());
+					acciones.agregarNodo(combate.getPersonajeActivo().getAcciones().get(i).getAccion());
 				respuesta.agregar("acciones", acciones);
+				
+				Respuesta objetivos = new Respuesta();
+				Respuesta aliados = new Respuesta();
+				Respuesta enemigos = new Respuesta();
+				for(int i = 0; i < combate.getPersonajes().size(); i++) {
+					PersonajeDeCombate pj = combate.getPersonajes().get(i); 
+					String nodo = "["+pj.getId()+"]: "+pj.getNombre()+" : "+pj.getVida()+"/"+pj.getVidaMax();
+					if(pj instanceof Aliado)
+						aliados.agregarNodo(nodo);
+					else 
+						enemigos.agregarNodo(nodo);
+				}
+
+				objetivos.agregar("aliados", aliados);
+				objetivos.agregar("enemigos", enemigos);
+				
+				respuesta.agregar("objetivos", objetivos);
+				
 			} else {
 				respuesta.agregarMensaje("no es tu turno");
 			}
@@ -98,21 +120,59 @@ public class CombateController {
 			this.personajes = new ArrayList<>();
 			this.nivelElegido = nivel;
 			
-			pjs.stream().forEach(pj -> {
+			int esenciaTotal = 0;
+			int esenciaMax = niveles.get(nivel).getEsencia();
+			
+			for(PersonajeDeCombateDTO pj : pjs){
 				Personaje pjPersonaje = this.fabCriaturas.crear(pj.getCriatura());
-				List<Accion> pjAcciones = new ArrayList<>();
+				esenciaTotal += pjPersonaje.getEsencia();
 				
-				pj.getAcciones().stream().forEach(a -> {
-					pjAcciones.add(fabAcciones.crear(a));
-				});
+				List<Accion> pjAcciones = new ArrayList<>();			
+				for(Acciones a : pj.getAcciones()) {
+					Accion ac = fabAcciones.crear(a);
+					esenciaTotal += ac.getEsencia();
+					pjAcciones.add(ac);
+				}
 
 				personajes.add(new Aliado(pjPersonaje, pjAcciones));
-			});
-			
-			combate = new SistemaDeCombate(personajes, crearEnemigos(nivel));		
+			}
+			if(esenciaTotal <= esenciaMax) {
+				combate = new SistemaDeCombate(personajes, crearEnemigos(nivel));		
 	
-			combate.start();
-			respuesta.agregarMensaje("iniciar");
+				combate.start();
+				respuesta.agregarMensaje("combate iniciado");
+			} else {
+				respuesta.agregarMensaje("la cantidad de esencia es mayor a la del nivel");
+				respuesta.agregarMensaje("esencia ingresada: "+esenciaTotal);
+				respuesta.agregarMensaje("esencia del nivel: "+esenciaMax);
+			}
+		} catch (Exception e) {
+			respuesta.error(e);
+			e.printStackTrace();
+		}
+		return respuesta;
+	}
+	
+	@GetMapping("creacion-nivel")
+	public Respuesta creacionNivel() {
+		Respuesta respuesta = new Respuesta();
+		try {
+			
+			Respuesta criaturas = new Respuesta();
+			List<Criaturas> tiposDeCriaturas = new ArrayList<Criaturas>(Arrays.asList(Criaturas.values()));
+			for(Criaturas criatura : tiposDeCriaturas) {
+				criaturas.agregarNodo(this.fabCriaturas.crear(criatura));
+			}
+
+			Respuesta acciones = new Respuesta();
+			List<Acciones> tiposDeAcciones = new ArrayList<Acciones>(Arrays.asList(Acciones.values()));
+			for(Acciones accion : tiposDeAcciones) {
+				acciones.agregarNodo(this.fabAcciones.crear(accion));
+			}
+			
+			respuesta.agregar("criaturas", criaturas);
+			respuesta.agregar("acciones", acciones);
+			
 		} catch (Exception e) {
 			respuesta.error(e);
 			e.printStackTrace();
@@ -156,6 +216,8 @@ public class CombateController {
 		try {
 			if(combate.getEstado() == EstadoDeCombate.VICTORIA)
 				niveles.pisarConAliados(nivelElegido, personajes);
+			else
+				respuesta.agregarMensaje("no pasaste de nivel, que flasheá");
 		} catch (Exception e) {
 			respuesta.error(e);
 			e.printStackTrace();
@@ -163,6 +225,19 @@ public class CombateController {
 		return respuesta;
 	}	
 	
+	
+	@GetMapping("mensajes-combate")
+	public Respuesta mensajesCombate(){
+		Respuesta respuesta = new Respuesta();
+		try {
+			for(String mensaje : combate.getMensajes())
+				respuesta.agregarMensaje(mensaje);
+		} catch (Exception e) {
+			respuesta.error(e);
+			e.printStackTrace();
+		}
+		return respuesta;
+	}	
 	
 	
 	

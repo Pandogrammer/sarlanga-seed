@@ -6,7 +6,7 @@ public class Rata extends Personaje {
 		super();
 		
 		this.raza = Criaturas.RATA;
-		this.nivel = 1;
+		this.esencia = 1;
 		
 		this.vida = 30;
 		this.ataque = 10;

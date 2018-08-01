@@ -6,10 +6,12 @@ public class Arañazo extends Accion {
 
 	private int daño;
 	private float multiplicador = 0.6f;
-	private int cansancio = 65;
 
 	public Arañazo() {
 		this.accion = Acciones.ARAÑAZO;
+		this.esencia = 0;
+		this.cansancio = 65;
+		
 		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	

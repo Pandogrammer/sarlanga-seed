@@ -19,6 +19,24 @@ public class Respuesta extends LinkedHashMap<String, Object> {
 		if(value != null) 
 			put(key, value);
 	}
+
+	public void agregarNodo(String nodoPadre, String nodoHijo, Object value) {
+		if(containsKey(nodoPadre)) {
+			((Respuesta) this.get(nodoPadre)).put(nodoHijo, value);
+		}
+	}
+
+	public void agregarNodo(String nodoPadre, Object value) {
+		if(containsKey(nodoPadre)) {
+			Respuesta padre = (Respuesta) this.get(nodoPadre);
+			padre.put(""+padre.size(), value);
+		}
+	}
+
+	public void agregarNodo(Object value) {
+		put(""+this.size(), value);
+	}
+	
 	
 	public void error(Exception e) {
 		put("error", e.getMessage());
