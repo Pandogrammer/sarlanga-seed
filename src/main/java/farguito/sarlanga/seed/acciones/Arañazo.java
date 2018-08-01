@@ -9,7 +9,7 @@ public class Arañazo extends Accion {
 	private int cansancio = 65;
 
 	public Arañazo() {
-		super();
+		this.accion = Acciones.ARAÑAZO;
 		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	

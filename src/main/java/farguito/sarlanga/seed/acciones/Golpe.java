@@ -9,7 +9,7 @@ public class Golpe extends Accion {
 	private int cansancio = 100;
 
 	public Golpe() {
-		super();
+		this.accion = Acciones.GOLPE;
 		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	

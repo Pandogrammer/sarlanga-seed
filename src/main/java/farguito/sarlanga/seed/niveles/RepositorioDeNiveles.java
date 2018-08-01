@@ -55,9 +55,19 @@ public class RepositorioDeNiveles {
 		return niveles.get(id);
 	}
 	
+	
+	public void pisarConAliados(Integer id, List<Aliado> aliados) {
+		List<PersonajeDeCombate> pjs = new ArrayList<>();		
+		aliados.stream().forEach(p -> {
+			pjs.add(p);
+		});
+		niveles.put(id, new Nivel(pjs));		
+	}
+	
 	public void pisar(Integer id, List<PersonajeDeCombate> pjs){
 		niveles.put(id, new Nivel(pjs));
 	}
+	
 	
 	public void agregar(List<PersonajeDeCombate> pjs) {
 		niveles.put(niveles.size()+1, new Nivel(pjs));

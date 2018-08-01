@@ -5,13 +5,13 @@ import java.util.List;
 import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.criaturas.Criaturas;
 
-public class PersonajePreCombateDTO {
+public class PersonajeDeCombateDTO {
 	
 	private Criaturas criatura;
 	private List<Acciones> acciones;
 	//List<mejoras>
 	
-	public PersonajePreCombateDTO() {}
+	public PersonajeDeCombateDTO() {}
 
 	public Criaturas getCriatura() {
 		return criatura;

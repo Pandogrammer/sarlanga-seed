@@ -3,13 +3,6 @@ package farguito.sarlanga.seed.combate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.annotation.SessionScope;
-
-import farguito.sarlanga.seed.Jugador;
 import farguito.sarlanga.seed.acciones.Accion;
 
 public class SistemaDeCombate extends Thread {
@@ -87,10 +80,8 @@ public class SistemaDeCombate extends Thread {
 	
 	public void actualizar() {
 		switch(estado) {
-		case EN_ESPERA: 
-			avanzarTurnos(); break;
-		case TURNO_ENEMIGO:
-			turnoEnemigo(); break;
+		case EN_ESPERA:     avanzarTurnos(); chequearVidas(); break;
+		case TURNO_ENEMIGO: turnoEnemigo(); break;
 		default: break;
 		}
 	}
@@ -122,10 +113,11 @@ public class SistemaDeCombate extends Thread {
 			i++;
 		}
 		
+		
 	}
 	
+	private void turnoEnemigo() {
 		Enemigo enemigo = (Enemigo) personajeActivo;
-		private void turnoEnemigo() {
 		enemigo.getEstrategia().preparar(personajes);
 		accionar(enemigo.getEstrategia().getObjetivo().getId(), enemigo.getEstrategia().getAccion());
 	}
@@ -146,7 +138,21 @@ public class SistemaDeCombate extends Thread {
 		return estado.equals(EstadoDeCombate.TURNO_JUGADOR);
 	}
 	
-	
+	private void chequearVidas() {
+		boolean aliadoVivo = false;
+		boolean enemigoVivo = false;
+		aliadoVivo = (personajes.stream().anyMatch(pj -> pj.isVivo() && pj instanceof Aliado));
+		enemigoVivo = (personajes.stream().anyMatch(pj -> pj.isVivo() && pj instanceof Enemigo));
+
+		if(enemigoVivo && !aliadoVivo) {
+			estado = EstadoDeCombate.DERROTA;
+			System.out.println("DERROTA");
+		}
+		else if(aliadoVivo && !enemigoVivo) {
+			estado = EstadoDeCombate.VICTORIA;
+			System.out.println("VICTORIA");
+		}
+	}
 	
 	
 	

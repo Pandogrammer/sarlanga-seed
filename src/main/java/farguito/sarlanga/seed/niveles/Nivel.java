@@ -2,8 +2,11 @@ package farguito.sarlanga.seed.niveles;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.eventbus.DeadEvent;
 
 import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.combate.Enemigo;
@@ -11,6 +14,7 @@ import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.estrategias.Agresivo;
+import farguito.sarlanga.seed.estrategias.Defensivo;
 import farguito.sarlanga.seed.estrategias.EstrategiaDeCombate;
 
 public class Nivel {
@@ -19,21 +23,21 @@ public class Nivel {
 	private Integer siguienteNivel;
 	private Integer esencia;
 	
-	private List<Enemigo> enemigos = new ArrayList<>();
+	private List<PersonajeDeCombate> personajes = new ArrayList<>();
 	
 	//cuando gana el jugador
 	public Nivel(List<PersonajeDeCombate> personajes) {
-		personajes.stream().forEach(pj -> {
-			enemigos.add(
-					new Enemigo(
-							pj.getPjBase()
-						  , pj.getAcciones()
-						  , crearIA()));
-		});
+		this.personajes = personajes;
 	}
 	
 	private EstrategiaDeCombate crearIA() {
-		return new Agresivo();
+		Random r = new Random(System.currentTimeMillis());
+		
+		switch(r.nextInt(2)) {
+		case 0 : return new Agresivo(); 
+		case 1 : return new Defensivo();
+		default: return null;
+		}
 	}
 
 	public Integer getId() {
@@ -61,12 +65,17 @@ public class Nivel {
 	}
 
 	public List<Enemigo> getEnemigos() {
+		List<Enemigo> enemigos = new ArrayList<>();
+		personajes.stream().forEach(pj -> {
+			enemigos.add(
+					new Enemigo(
+							pj.getPjBase()
+						  , pj.getAcciones()
+						  , crearIA()));
+		});
 		return enemigos;
 	}
 
-	public void setEnemigos(List<Enemigo> enemigos) {
-		this.enemigos = enemigos;
-	}
 	
 	
 }

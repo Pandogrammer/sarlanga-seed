@@ -16,14 +16,13 @@ import org.springframework.web.context.annotation.SessionScope;
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.acciones.Accion;
 import farguito.sarlanga.seed.acciones.FabricaDeAcciones;
-import farguito.sarlanga.seed.acciones.Golpe;
 import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.Enemigo;
+import farguito.sarlanga.seed.combate.EstadoDeCombate;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 import farguito.sarlanga.seed.combate.SistemaDeCombate;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
-import farguito.sarlanga.seed.estrategias.Agresivo;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 
 @RestController
@@ -42,48 +41,43 @@ public class CombateController {
 	
 	
 	private SistemaDeCombate combate;
+
+	private List<Aliado> personajes;
+	private Integer nivelElegido;
 	
-		
-	@GetMapping("partida")
-	public Respuesta personajes(){
+			
+	
+	@GetMapping("acciones-posibles")
+	public Respuesta accionesPosibles() {
+
 		Respuesta respuesta = new Respuesta();
 		try {
-			List<PersonajeDeCombate> aliados = new ArrayList<>();
-			List<PersonajeDeCombate> enemigos = new ArrayList<>();
-			
-			combate.getPersonajes().stream().forEach(p -> {
-				if(p instanceof Aliado) {
-					aliados.add(p);
-				} else {
-					enemigos.add(p);
-				}
-			});
-			
-			respuesta.agregar("estado", combate.getEstado());
-			if(combate.isTurnoJugador())
-				respuesta.agregar("acciones", combate.getPersonajeActivo().getAcciones()); //TODO: lista de acciones
-			respuesta.agregar("personajeActivo", combate.getPersonajeActivo().getId());
-			respuesta.agregar("aliados", aliados);
-			respuesta.agregar("enemigos", enemigos);
-			
+			if(combate.isTurnoJugador()) {
+				respuesta.agregar("personaje",  combate.getPersonajeActivo().getPjBase().getRaza());
+				Respuesta acciones = new Respuesta();
+				for(int i = 0; i < combate.getPersonajeActivo().getAcciones().size(); i++)
+					acciones.agregar(""+i, combate.getPersonajeActivo().getAcciones().get(i).getAccion());
+				respuesta.agregar("acciones", acciones);
+			} else {
+				respuesta.agregarMensaje("no es tu turno");
+			}
 		} catch (Exception e) {
 			respuesta.error(e);
 			e.printStackTrace();
 		}
-		return respuesta;
+		return respuesta;		
 	}
 	
 	
-	
 	@PostMapping("accionar")
-	public Respuesta accionar(
-			//@RequestBody accion/id?
-			@RequestBody int objetivoId
+	public Respuesta accionar( 
+			@RequestParam int accionId,
+			@RequestParam int objetivoId
 			) {
 
 		Respuesta respuesta = new Respuesta();
 		try {
-			String mensaje = combate.accionar(objetivoId, new Golpe());
+			String mensaje = combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId));
 			respuesta.agregarMensaje(mensaje);
 		} catch (Exception e) {
 			respuesta.error(e);
@@ -96,27 +90,26 @@ public class CombateController {
 	
 	@PostMapping("iniciar")
 	public Respuesta iniciar(
-			@RequestBody List<PersonajePreCombateDTO> pjs,
+			@RequestBody List<PersonajeDeCombateDTO> pjs,
 			@RequestParam Integer nivel
 			) {
 		Respuesta respuesta = new Respuesta();
 		try {
-			List<Aliado> aliados = new ArrayList<>();
+			this.personajes = new ArrayList<>();
+			this.nivelElegido = nivel;
 			
 			pjs.stream().forEach(pj -> {
-				
 				Personaje pjPersonaje = this.fabCriaturas.crear(pj.getCriatura());
 				List<Accion> pjAcciones = new ArrayList<>();
 				
 				pj.getAcciones().stream().forEach(a -> {
 					pjAcciones.add(fabAcciones.crear(a));
 				});
-				
-				
-				aliados.add(new Aliado(pjPersonaje, pjAcciones));
+
+				personajes.add(new Aliado(pjPersonaje, pjAcciones));
 			});
 			
-			combate = new SistemaDeCombate(aliados, crearEnemigos(nivel));		
+			combate = new SistemaDeCombate(personajes, crearEnemigos(nivel));		
 	
 			combate.start();
 			respuesta.agregarMensaje("iniciar");
@@ -157,6 +150,18 @@ public class CombateController {
 	
 	
 	
+	@GetMapping("pasar-nivel")
+	public Respuesta pasarNivel() {
+		Respuesta respuesta = new Respuesta();
+		try {
+			if(combate.getEstado() == EstadoDeCombate.VICTORIA)
+				niveles.pisarConAliados(nivelElegido, personajes);
+		} catch (Exception e) {
+			respuesta.error(e);
+			e.printStackTrace();
+		}
+		return respuesta;
+	}	
 	
 	
 	
@@ -165,6 +170,8 @@ public class CombateController {
 	private List<Enemigo> crearEnemigos(Integer nivel) {
 		return niveles.get(nivel).getEnemigos();
 	}
+	
+	
 	
 	
 	
