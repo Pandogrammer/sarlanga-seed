@@ -3,8 +3,14 @@ package farguito.sarlanga.seed.combate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
+
 import farguito.sarlanga.seed.acciones.Accion;
 
+@Service
+@Scope(scopeName = "websocket", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SistemaDeCombate extends Thread {
 	
 	private PersonajeDeCombate personajeActivo;
@@ -18,10 +24,10 @@ public class SistemaDeCombate extends Thread {
 	
 	//falso logger
 	private List<String> mensajes = new ArrayList<>();
-	
-	
-	
-	public SistemaDeCombate(List<Aliado> aliados,List<Enemigo> enemigos) {
+
+	public boolean iniciar(List<Aliado> aliados,List<Enemigo> enemigos) {
+		personajes = new ArrayList<>();
+		turnos = new ArrayList<>();
 		
 		aliados.stream().forEach(p -> {
 			p.setId(personajes.size());
@@ -42,6 +48,11 @@ public class SistemaDeCombate extends Thread {
 			estado = EstadoDeCombate.TURNO_JUGADOR;
 		else
 			estado = EstadoDeCombate.TURNO_ENEMIGO;
+		
+		
+		this.start();
+		
+		return true;
 	}
 	
 	public String accionar(Integer objetivoId, Accion accion) {

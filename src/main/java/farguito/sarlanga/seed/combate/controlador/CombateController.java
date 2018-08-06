@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +44,7 @@ public class CombateController {
 	@Autowired
 	private RepositorioDeNiveles niveles;
 	
-	
+	@Autowired
 	private SistemaDeCombate combate;
 
 	private List<Aliado> personajes;
@@ -137,9 +139,8 @@ public class CombateController {
 				personajes.add(new Aliado(pjPersonaje, pjAcciones));
 			}
 			if(esenciaTotal <= esenciaMax) {
-				combate = new SistemaDeCombate(personajes, crearEnemigos(nivel));		
+				combate.iniciar(personajes, crearEnemigos(nivel));		
 	
-				combate.start();
 				respuesta.agregarMensaje("combate iniciado");
 			} else {
 				respuesta.agregarMensaje("la cantidad de esencia es mayor a la del nivel");
