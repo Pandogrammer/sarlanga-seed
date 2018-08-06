@@ -13,13 +13,13 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/messages');
+    var socket = new SockJS('/mensajes');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
+        stompClient.subscribe('/combate/mensajes', function (turnoAccionOut) {
+            showMensaje(JSON.parse(turnoAccionOut.body).mensaje);
         });
     });
 }
@@ -33,11 +33,16 @@ function disconnect() {
 }
 
 function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
+    stompClient.send("/app/accion", {}, 
+    		JSON.stringify(
+    				{'accionId': $("#accionId").val()
+    			    ,'objetivoId': $("#objetivoId").val()
+    			    } ));
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+function showMensaje(message) {
+	console.log("frula")
+    $("#mensajes").append("<tr><td>" + message + "</td></tr>");
 }
 
 $(function () {

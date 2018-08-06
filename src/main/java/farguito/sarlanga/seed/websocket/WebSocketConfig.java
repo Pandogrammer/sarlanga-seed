@@ -15,12 +15,12 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
 
     @Override
     public void configureStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/messages").withSockJS();
+        registry.addEndpoint("/mensajes").withSockJS();
     }
     
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/combate");
         config.setApplicationDestinationPrefixes("/app");	
     }
 

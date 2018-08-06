@@ -1,4 +1,4 @@
-package farguito.sarlanga.seed.websocket;
+package farguito.sarlanga.seed.websocket.sesion;
 
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 

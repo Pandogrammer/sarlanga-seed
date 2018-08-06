@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import farguito.sarlanga.seed.acciones.Accion;
 
-@Service
-@Scope(scopeName = "websocket", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SistemaDeCombate extends Thread {
 	
 	private PersonajeDeCombate personajeActivo;
@@ -24,6 +22,8 @@ public class SistemaDeCombate extends Thread {
 	
 	//falso logger
 	private List<String> mensajes = new ArrayList<>();
+	//DUDAS
+	private CombateController controlador;
 
 	public boolean iniciar(List<Aliado> aliados,List<Enemigo> enemigos) {
 		personajes = new ArrayList<>();
@@ -175,8 +175,16 @@ public class SistemaDeCombate extends Thread {
 	
 	private void log(String mensaje) {
 		mensajes.add(mensaje);
+		controlador.loggear(mensaje);
 		System.out.println(mensaje);		
 	}
+
+	//sacarlo despues?
+	public void setControlador(CombateController controlador) {
+		this.controlador = controlador;
+	}
+
+	
 	
 	
 	

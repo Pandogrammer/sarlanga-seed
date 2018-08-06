@@ -44,7 +44,6 @@ public class CombateController {
 	@Autowired
 	private RepositorioDeNiveles niveles;
 	
-	@Autowired
 	private SistemaDeCombate combate;
 
 	private List<Aliado> personajes;
@@ -139,6 +138,7 @@ public class CombateController {
 				personajes.add(new Aliado(pjPersonaje, pjAcciones));
 			}
 			if(esenciaTotal <= esenciaMax) {
+				combate = new SistemaDeCombate();
 				combate.iniciar(personajes, crearEnemigos(nivel));		
 	
 				respuesta.agregarMensaje("combate iniciado");
