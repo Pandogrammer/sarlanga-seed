@@ -1,4 +1,5 @@
 var stompClient = null;
+var combate = "/app/combate";
 
 function setConnected(connected) {
 	$("#connect").prop("disabled", connected);
@@ -15,19 +16,16 @@ function connect() {
 	var socket = new SockJS('/mensajes');
 	stompClient = Stomp.over(socket);
 	stompClient.connect({}, function(frame) {
+        var sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+        console.log("connected, session id: " + sessionId);
 		setConnected(true);
 		console.log('Connected: ' + frame);
 
-		stompClient.subscribe('/user/combate/mensajes', 
+		stompClient.subscribe('/combate/mensajes-'+sessionId, 
 			function(turnoAccionOut) {
 				showMensaje(JSON.parse(turnoAccionOut.body).mensaje);
 			});
-/*
-		stompClient.subscribe('/combate/mensajes', 
-			function(turnoAccionOut) {
-				showMensaje(JSON.parse(turnoAccionOut.body).mensaje);
-			});
-*/		
+		
 	});
 }
 
@@ -37,10 +35,11 @@ function disconnect() {
 	}
 	setConnected(false);
 	console.log("Disconnected");
+	$("#mensajes").remove();
 }
 
-function sendAccion() {
-	stompClient.send("/app/accion", {}, JSON.stringify({
+function accion() {
+	stompClient.send(combate+"/accion", {}, JSON.stringify({
 		'accionId' : $("#accionId").val(),
 		'objetivoId' : $("#objetivoId").val()
 	}));
@@ -60,7 +59,10 @@ $(function() {
 	$("#disconnect").click(function() {
 		disconnect();
 	});
-	$("#send").click(function() {
-		sendAccion();
+	$("#accion").click(function() {
+		accion();
+	});
+	$("#crear").click(function() {
+		crear();
 	});
 });

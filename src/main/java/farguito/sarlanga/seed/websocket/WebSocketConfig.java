@@ -24,13 +24,14 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/combate");
-        config.setApplicationDestinationPrefixes("/app");	
+    	config.setApplicationDestinationPrefixes("/app");
+    	config.enableSimpleBroker("/combate");        	
     }
     
     @Override
     public void configureStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/mensajes").setAllowedOrigins("*").setHandshakeHandler(new DefaultHandshakeHandler() {
+        
+    	registry.addEndpoint("/mensajes").setAllowedOrigins("*").setHandshakeHandler(new DefaultHandshakeHandler() {
         	 
             public boolean beforeHandshake(
               ServerHttpRequest request, 

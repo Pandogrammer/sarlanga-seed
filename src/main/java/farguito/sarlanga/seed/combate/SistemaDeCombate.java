@@ -97,8 +97,18 @@ public class SistemaDeCombate extends Thread {
 		switch(estado) {
 		case EN_ESPERA:     avanzarTurnos(); chequearVidas(); break;
 		case TURNO_ENEMIGO: turnoEnemigo(); break;
+		case VICTORIA:      victoria(); break;
+		case DERROTA:       derrota(); break;		
 		default: break;
 		}
+	}
+	
+	private void victoria() {
+		this.interrupt();
+	}
+	
+	private void derrota() {
+		this.interrupt();
 	}
 	
 	private void avanzarTurnos() {
@@ -176,7 +186,7 @@ public class SistemaDeCombate extends Thread {
 	private void log(String mensaje) {
 		mensajes.add(mensaje);
 		controlador.loggear(mensaje);
-		System.out.println(mensaje);		
+		//System.out.println(mensaje);		
 	}
 
 	//sacarlo despues?
