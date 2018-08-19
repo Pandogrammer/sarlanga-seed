@@ -1,9 +1,11 @@
 package farguito.sarlanga.seed;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+//refactorizame pls
 public class Respuesta extends LinkedHashMap<String, Object> {
 
 	
@@ -103,4 +105,5 @@ public class Respuesta extends LinkedHashMap<String, Object> {
 	public void exito() {
 		this.put("exito", true);	
 	}
+	
 }

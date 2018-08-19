@@ -1,6 +1,6 @@
 package farguito.sarlanga.seed.combate;
 
-public interface CombateController {
+public interface ControladorDeCombate {
 
 	public void loggear(String mensaje);
 	

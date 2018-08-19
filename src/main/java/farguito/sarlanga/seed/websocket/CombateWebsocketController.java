@@ -4,74 +4,48 @@ package farguito.sarlanga.seed.websocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.messaging.MessageHeaders;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.socket.WebSocketSession;
 
 import farguito.sarlanga.seed.Respuesta;
+import farguito.sarlanga.seed.SarlangaContext;
 import farguito.sarlanga.seed.acciones.Accion;
 import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.acciones.FabricaDeAcciones;
 import farguito.sarlanga.seed.combate.Aliado;
-import farguito.sarlanga.seed.combate.CombateController;
+import farguito.sarlanga.seed.combate.ControladorDeCombate;
 import farguito.sarlanga.seed.combate.EstadoDeCombate;
 import farguito.sarlanga.seed.combate.SistemaDeCombate;
 import farguito.sarlanga.seed.combate.controlador.PersonajeDeCombateDTO;
-import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 import farguito.sarlanga.seed.websocket.objetos.TurnoAccionIN;
-import farguito.sarlanga.seed.websocket.objetos.TurnoAccionOUT;
 
-@Controller
-@Scope(scopeName = "websocket", proxyMode = ScopedProxyMode.TARGET_CLASS) //genero uno por conexion
-public class CombateWebsocketController implements CombateController, ApplicationListener<SessionConnectEvent> {
-
-	private String sessionId;
-	private static final String COMBATE = 			"/combate";
-	private static final String MENSAJES = 			COMBATE+"/mensajes";		
-	private static final String ESTADO_PERSONAJES = COMBATE+"/personajes";
-	
-	@Autowired
-    private SimpMessageSendingOperations template;
-	
-
-	@Autowired
+public class CombateWebsocketController implements ControladorDeCombate {
+		
 	private FabricaDeCriaturas fabCriaturas;
 	
-	@Autowired
 	private FabricaDeAcciones fabAcciones;
 	
-	@Autowired
 	private RepositorioDeNiveles niveles;
 	
 	private SistemaDeCombate combate;
-
+	
+	private WebSocketSession session;
+	private CombateWebSocketHandler handler;
+	
 	private List<Aliado> personajes;
 	private Integer nivelElegido;
 	
-	
-	@PostConstruct
-	private void init() {
-		System.out.println("init");
-		combate = new SistemaDeCombate();
-		combate.setControlador(this);
+	//is this frula?
+	public CombateWebsocketController(WebSocketSession session) {
+		this.session = session;
+		fabCriaturas = (FabricaDeCriaturas) SarlangaContext.getAppContext().getBean("fabricaDeCriaturas");
+		fabAcciones = (FabricaDeAcciones) SarlangaContext.getAppContext().getBean("fabricaDeAcciones");
+		niveles = (RepositorioDeNiveles) SarlangaContext.getAppContext().getBean("repositorioDeNiveles");
+		handler = (CombateWebSocketHandler) SarlangaContext.getAppContext().getBean("combateWebSocketHandler");
 	}
 	
-    @MessageMapping(COMBATE+"/accion") //lo que viene de JS
     public void turnoAccion(TurnoAccionIN turnoAccion){ 
     	try{
     		combate.accionar(turnoAccion.getObjetivoId(), combate.getPersonajeActivo().getAcciones().get(turnoAccion.getAccionId()));    	
@@ -80,7 +54,6 @@ public class CombateWebsocketController implements CombateController, Applicatio
     	}
     }
 
-    @MessageMapping(COMBATE+"/pasar-nivel")
 	public void pasarNivel() {
 		try {
 			if(combate.getEstado() == EstadoDeCombate.VICTORIA)
@@ -90,7 +63,6 @@ public class CombateWebsocketController implements CombateController, Applicatio
 		}
 	}	
     
-    @MessageMapping(COMBATE+"/iniciar")
 	public void iniciar(
 			List<PersonajeDeCombateDTO> pjs,
 			Integer nivel
@@ -118,6 +90,7 @@ public class CombateWebsocketController implements CombateController, Applicatio
 			}
 			if(esenciaTotal <= esenciaMax) {
 				combate = new SistemaDeCombate();
+				combate.setControlador(this);
 				combate.iniciar(personajes, niveles.get(nivel).getEnemigos());		
 	
 				respuesta.agregarMensaje("combate iniciado");
@@ -130,30 +103,16 @@ public class CombateWebsocketController implements CombateController, Applicatio
 			respuesta.error(e);
 			e.printStackTrace();
 		}
-		loggear(respuesta);
+		loggear(respuesta.toString());
 	}
     
-    private void loggear(Respuesta r) {
-    	((List<String>) r.get("mensajes")).stream().forEach(m ->{
-    		loggear(m);
-    	});
-    }
     
 	public void loggear(String mensaje) {
-		enviar(MENSAJES, new TurnoAccionOUT(HtmlUtils.htmlEscape(mensaje)));
-	}
-
-	@Override
-	public void onApplicationEvent(SessionConnectEvent event) {
-		MessageHeaders headers = event.getMessage().getHeaders();
-		this.sessionId = SimpMessageHeaderAccessor.getSessionId(headers);		
+		handler.sendMessage(session, mensaje);
 	}
 	
-	private void enviar(String canal, Object objeto) { 				
-		if(sessionId != null) {
-			template.convertAndSend(canal+"-"+sessionId, objeto);
-		}
-	}
+
+	public void destruir() {}
 	
 	
 

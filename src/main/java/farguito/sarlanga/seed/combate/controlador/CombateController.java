@@ -30,9 +30,9 @@ import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 
-@RestController
-@SessionScope
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+//@RestController
+//@SessionScope
+//@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class CombateController {
 
 	@Autowired

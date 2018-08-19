@@ -23,7 +23,7 @@ public class SistemaDeCombate extends Thread {
 	//falso logger
 	private List<String> mensajes = new ArrayList<>();
 	//DUDAS
-	private CombateController controlador;
+	private ControladorDeCombate controlador;
 
 	public boolean iniciar(List<Aliado> aliados,List<Enemigo> enemigos) {
 		personajes = new ArrayList<>();
@@ -190,7 +190,7 @@ public class SistemaDeCombate extends Thread {
 	}
 
 	//sacarlo despues?
-	public void setControlador(CombateController controlador) {
+	public void setControlador(ControladorDeCombate controlador) {
 		this.controlador = controlador;
 	}
 

@@ -4,15 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.google.common.eventbus.DeadEvent;
-
-import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.combate.Enemigo;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
-import farguito.sarlanga.seed.criaturas.Criaturas;
-import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.estrategias.Agresivo;
 import farguito.sarlanga.seed.estrategias.Defensivo;
 import farguito.sarlanga.seed.estrategias.EstrategiaDeCombate;

@@ -1,9 +1,9 @@
 package farguito.sarlanga.seed.niveles;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
 
@@ -29,7 +29,7 @@ public class RepositorioDeNiveles {
 	@Autowired
 	private FabricaDeAcciones fabAcciones;
 	
-	Map<Integer, Nivel> niveles = new HashMap<>();
+	Map<Integer, Nivel> niveles = new ConcurrentHashMap<>();
 	
 	
 	public RepositorioDeNiveles() {}
