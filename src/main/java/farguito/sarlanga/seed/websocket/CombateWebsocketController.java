@@ -103,12 +103,29 @@ public class CombateWebsocketController implements ControladorDeCombate {
 			respuesta.error(e);
 			e.printStackTrace();
 		}
-		loggear(respuesta.toString());
+		responder(respuesta);
 	}
     
+	public void informacionNivel(Integer nivel) {
+		Respuesta respuesta = new Respuesta();
+		try {
+			int esenciaMax = niveles.get(nivel).getEsencia();
+			respuesta.put("esencia", esenciaMax);
+		} catch (Exception e) {
+			respuesta.error(e);
+			e.printStackTrace();
+		}
+		responder(respuesta);
+	}
     
+	private void responder(Respuesta respuesta) {
+		handler.sendMessage(session, respuesta);		
+	}
+	
 	public void loggear(String mensaje) {
-		handler.sendMessage(session, mensaje);
+		Respuesta respuesta = new Respuesta();
+		respuesta.agregarMensaje(mensaje);
+		handler.sendMessage(session, respuesta);
 	}
 	
 

@@ -35,18 +35,25 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 		String sessionId = session.getId();
 		CombateRequest request = mapper.readValue(message.getPayload(), CombateRequest.class);
 		switch (request.getMetodo()) {
-		case "iniciar" : IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
-						 sessions.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()); 
-						 break;
+		case "iniciar" : {
+			IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
+			sessions.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()); 
+			break;
+		}
+		case "informacion_nivel" : {
+			Map dto = mapper.convertValue(request.getData(), Map.class);
+			sessions.get(sessionId).informacionNivel((Integer) dto.get("nivel")); 
+			break;
+		}
 		default : break;
 		}
 	}
 	
 	
 	//ponele que entendi por qué funciona con synchronized
-	public synchronized void sendMessage(WebSocketSession session, String message) {
+	public synchronized void sendMessage(WebSocketSession session, Map message) {
 		try {
-			session.sendMessage(new TextMessage(message));
+			session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,6 +61,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 		
 	}
 	
+	//TODO: mandarme el session id? y mandarlo en el request? usar seguridad onda JWT?
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		System.out.println("logueado: "+session.getId());		
