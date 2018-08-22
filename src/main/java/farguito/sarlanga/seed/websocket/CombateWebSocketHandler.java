@@ -12,6 +12,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.websocket.objetos.CombateRequest;
 import farguito.sarlanga.seed.websocket.objetos.IniciarDTO;
 
@@ -19,61 +20,77 @@ import farguito.sarlanga.seed.websocket.objetos.IniciarDTO;
 public class CombateWebSocketHandler extends TextWebSocketHandler {
 	
 	ObjectMapper mapper = new ObjectMapper();
-	
-	Map<String, CombateWebsocketController> sessions = new ConcurrentHashMap<>();
 
+	private Map<String, CombateWebSocketController> controllers = new ConcurrentHashMap<>();
+	private Map<String, WebSocketSession> sesiones = new ConcurrentHashMap<>();
+	
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
 			throws InterruptedException, IOException {
-		/* broadcast
-		for(WebSocketSession webSocketSession : sessions) {
-			Map value = new Gson().fromJson(message.getPayload(), Map.class);
-			System.out.println(value.get("name"));
-			webSocketSession.sendMessage(new TextMessage("Hello " + value.get("name") + " !"));
-		}
-		*/
+		
 		String sessionId = session.getId();
 		CombateRequest request = mapper.readValue(message.getPayload(), CombateRequest.class);
+		Respuesta rta = new Respuesta();
+
+		if (request.getId() != null) rta.agregar("id", request.getId());
 		switch (request.getMetodo()) {
 		case "iniciar" : {
 			IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
-			sessions.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()); 
+			rta.agregar("data", controllers.get(sessionId).iniciar(dto.getPjs(), dto.getNivel())); 
 			break;
 		}
 		case "informacion_nivel" : {
 			Map dto = mapper.convertValue(request.getData(), Map.class);
-			sessions.get(sessionId).informacionNivel((Integer) dto.get("nivel")); 
+			rta.agregar("data", controllers.get(sessionId).informacionNivel((Integer) dto.get("nivel"))); 
+			break;
+		}
+		case "creacion_nivel" : {
+			Map dto = mapper.convertValue(request.getData(), Map.class);
+			rta.agregar("data", controllers.get(sessionId).creacionNivel());
 			break;
 		}
 		default : break;
+		}
+		
+		//si tiene id implica que espera una respuesta, sino se debe disparar desde el controller, pasarlo para alla directamente?
+		if(request.getId() != null) enviar(sessionId, rta);
+	}
+	
+	public void broadcast(Map message) {
+		for(String sessionId : sesiones.keySet()) {
+			enviar(sessionId, message);
 		}
 	}
 	
 	
 	//ponele que entendi por qué funciona con synchronized
-	public synchronized void sendMessage(WebSocketSession session, Map message) {
+	public synchronized void enviar(String sessionId, Map message) {
 		try {
-			session.sendMessage(new TextMessage(mapper.writeValueAsString(message)));
+			sesiones.get(sessionId).sendMessage(new TextMessage(mapper.writeValueAsString(message)));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
 	}
 	
 	//TODO: mandarme el session id? y mandarlo en el request? usar seguridad onda JWT?
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("logueado: "+session.getId());		
-		sessions.put(session.getId(), new CombateWebsocketController(session));
+		System.out.println("logueado: "+session.getId());
+		//re-agarrar el controller si relogueo?
+		controllers.put(session.getId(), new CombateWebSocketController(session.getId()));
+		
+		sesiones.put(session.getId(), session);
 	}
 	
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		System.out.println("deslogueado: "+session.getId());
-		sessions.get(session.getId()).destruir();
-		sessions.remove(session.getId());	
+		//mantener el controller vivo por si se vuelve a loguear?
+		controllers.get(session.getId()).destruir();
+		controllers.remove(session.getId());	
+		
+		sesiones.remove(session.getId());	
 	}
 	
 }
