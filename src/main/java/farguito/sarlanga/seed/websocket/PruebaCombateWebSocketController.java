@@ -21,7 +21,7 @@ import farguito.sarlanga.seed.criaturas.Personaje;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 import farguito.sarlanga.seed.websocket.objetos.TurnoAccionIN;
 
-public class CombateWebSocketController implements ControladorDeCombate {
+public class PruebaCombateWebSocketController implements ControladorDeCombate {
 		
 	private FabricaDeCriaturas fabCriaturas;
 	
@@ -38,7 +38,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	private Integer nivelElegido;
 	
 	//is this frula?
-	public CombateWebSocketController(String sessionId) {
+	public PruebaCombateWebSocketController(String sessionId) {
 		this.sessionId = sessionId;
 		fabCriaturas = (FabricaDeCriaturas) SarlangaContext.getAppContext().getBean("fabricaDeCriaturas");
 		fabAcciones = (FabricaDeAcciones) SarlangaContext.getAppContext().getBean("fabricaDeAcciones");
