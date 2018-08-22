@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.web.socket.WebSocketSession;
-
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.SarlangaContext;
 import farguito.sarlanga.seed.acciones.Accion;
