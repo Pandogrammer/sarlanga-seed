@@ -21,7 +21,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	
 	ObjectMapper mapper = new ObjectMapper();
 
-	private Map<String, PruebaCombateWebSocketController> controllers = new ConcurrentHashMap<>();
+	private Map<String, CombateWebSocketController> controllers = new ConcurrentHashMap<>();
 	private Map<String, WebSocketSession> sesiones = new ConcurrentHashMap<>();
 	
 	@Override
@@ -77,7 +77,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		System.out.println("logueado: "+session.getId());
 		//re-agarrar el controller si relogueo?
-		controllers.put(session.getId(), new PruebaCombateWebSocketController(session.getId()));
+		controllers.put(session.getId(), new CombateWebSocketController(session.getId()));
 		
 		sesiones.put(session.getId(), session);
 	}
