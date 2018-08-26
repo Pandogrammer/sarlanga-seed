@@ -185,8 +185,7 @@ public class SistemaDeCombate extends Thread {
 	
 	private void log(String mensaje) {
 		mensajes.add(mensaje);
-		controlador.loggear(mensaje);
-		//System.out.println(mensaje);		
+		controlador.loggear(mensaje);	
 	}
 
 	//sacarlo despues?

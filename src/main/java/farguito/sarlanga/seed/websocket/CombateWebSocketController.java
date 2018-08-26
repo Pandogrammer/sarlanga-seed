@@ -155,11 +155,13 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	private void enviarTodos(Respuesta respuesta) {
 		handler.broadcast(respuesta);
 	}
-	
+	//de alguna forma tengo que mantener la conexion controller -> handler
 	public void loggear(String mensaje) {
+		System.out.println(this.sessionId+": "+mensaje);
 		Respuesta respuesta = new Respuesta();
 		respuesta.agregarMensaje(mensaje);
-		handler.enviar(this.sessionId, respuesta);
+		handler = (CombateWebSocketHandler) SarlangaContext.getAppContext().getBean("combateWebSocketHandler");
+		handler.broadcast(respuesta);
 	}
 	
 

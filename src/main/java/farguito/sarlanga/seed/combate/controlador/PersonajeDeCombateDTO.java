@@ -7,6 +7,7 @@ import farguito.sarlanga.seed.criaturas.Criaturas;
 
 public class PersonajeDeCombateDTO {
 	
+	private Integer esencia;
 	private Criaturas criatura;
 	private List<Acciones> acciones;
 	//List<mejoras>
@@ -20,6 +21,11 @@ public class PersonajeDeCombateDTO {
 	public List<Acciones> getAcciones() {
 		return acciones;
 	}
+
+	public Integer getEsencia() {
+		return esencia;
+	}
+	
 	
 	
 
