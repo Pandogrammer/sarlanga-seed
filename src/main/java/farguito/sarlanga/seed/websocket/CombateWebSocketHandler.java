@@ -22,7 +22,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	ObjectMapper mapper = new ObjectMapper();
 
 	private Map<String, WebSocketSession> sesiones = new ConcurrentHashMap<>();
-	private Map<String, CombateController> controladores = new ConcurrentHashMap<>();
+	private Map<String, CombateWebSocketController> controladores = new ConcurrentHashMap<>();
 	
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
@@ -36,7 +36,8 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			switch (request.getMetodo()) {
 			case "iniciar" : {
 				IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
-				rta.agregar("data", controladores.get(sessionId).iniciar(dto.getPjs(), dto.getNivel())); 
+				rta.agregar("data", controladores.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()));
+				enviar(sessionId, rta);
 				break;
 			}
 			case "informacion_nivel" : {
@@ -69,8 +70,9 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	
 	//ponele que entendi por qué funciona con synchronized
 	public synchronized void enviar(String sessionId, Map message) {
-		System.out.println(message);
+		
 		try {
+			System.out.println(mapper.writeValueAsString(message));
 			if(controladores.get(sessionId).conectado())
 				sesiones.get(sessionId).sendMessage(new TextMessage(mapper.writeValueAsString(message)));
 		} catch (IOException e) {
@@ -83,7 +85,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String sessionId = session.getId();
 		//re-agarrar el controller si relogueo?
-		CombateController cc = new CombateController(sessionId);
+		CombateWebSocketController cc = new CombateWebSocketController(sessionId);
 		cc.setHandler(this);
 		
 		if(controladores.containsKey(sessionId)) {

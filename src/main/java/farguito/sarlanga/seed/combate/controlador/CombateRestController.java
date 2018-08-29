@@ -33,7 +33,7 @@ import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 //@RestController
 //@SessionScope
 //@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-public class CombateController {
+public class CombateRestController {
 
 	@Autowired
 	private FabricaDeCriaturas fabCriaturas;
@@ -100,7 +100,7 @@ public class CombateController {
 
 		Respuesta respuesta = new Respuesta();
 		try {
-			String mensaje = combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId));
+			String mensaje = (String) combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId)).get("mensaje");
 			respuesta.agregarMensaje(mensaje);
 		} catch (Exception e) {
 			respuesta.error(e);
@@ -139,7 +139,7 @@ public class CombateController {
 			}
 			if(esenciaTotal <= esenciaMax) {
 				combate = new SistemaDeCombate();
-				combate.iniciar(personajes, crearEnemigos(nivel));		
+				combate.preparar(personajes, crearEnemigos(nivel));		
 	
 				respuesta.agregarMensaje("combate iniciado");
 			} else {

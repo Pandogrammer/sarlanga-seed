@@ -3,9 +3,9 @@ package farguito.sarlanga.seed.websocket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import org.springframework.web.socket.WebSocketSession;
+import java.util.Map;
 
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.SarlangaContext;
@@ -14,6 +14,7 @@ import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.acciones.FabricaDeAcciones;
 import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.ControladorDeCombate;
+import farguito.sarlanga.seed.combate.Enemigo;
 import farguito.sarlanga.seed.combate.EstadoDeCombate;
 import farguito.sarlanga.seed.combate.SistemaDeCombate;
 import farguito.sarlanga.seed.combate.controlador.PersonajeDeCombateDTO;
@@ -21,9 +22,10 @@ import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
+import farguito.sarlanga.seed.websocket.objetos.PersonajeEnCombateDTO;
 
 
-public class CombateController implements ControladorDeCombate {
+public class CombateWebSocketController implements ControladorDeCombate {
 		
 	private FabricaDeCriaturas fabCriaturas;
 	
@@ -41,7 +43,7 @@ public class CombateController implements ControladorDeCombate {
 	private Integer nivelElegido;
 	
 	//is this frula? v2.0
-	public CombateController(String sessionId) {
+	public CombateWebSocketController(String sessionId) {
 		this.sessionId = sessionId;
 		fabCriaturas = (FabricaDeCriaturas) SarlangaContext.getAppContext().getBean("fabricaDeCriaturas");
 		fabAcciones = (FabricaDeAcciones) SarlangaContext.getAppContext().getBean("fabricaDeAcciones");
@@ -82,17 +84,36 @@ public class CombateController implements ControladorDeCombate {
 
 				personajes.add(new Aliado(pjPersonaje, pjAcciones));
 			}
+			
 			if(esenciaTotal <= esenciaMax) {
 				combate = new SistemaDeCombate();
 				combate.setControlador(this);
-				combate.iniciar(personajes, niveles.get(nivel).getEnemigos());		
-	
-				respuesta.agregarMensaje("combate iniciado");
+				
+				List<Enemigo> personajesEnemigos = niveles.get(nivel).getEnemigos();
+				
+				combate.preparar(personajes, personajesEnemigos);		
+
+				List<PersonajeEnCombateDTO> aliados = new ArrayList<>();
+				List<PersonajeEnCombateDTO> enemigos = new ArrayList<>();
+				
+				combate.getPersonajes().stream().forEach(pj -> {
+					if(pj instanceof Aliado)
+						aliados.add(new PersonajeEnCombateDTO(pj));
+					else
+						enemigos.add(new PersonajeEnCombateDTO(pj));
+				});
+				
+				respuesta.agregar("aliados", aliados);
+				respuesta.agregar("enemigos", enemigos);
+
+				//TODO: deberia ir aparte
+				combate.iniciar();
 			} else {
 				respuesta.agregarMensaje("la cantidad de esencia es mayor a la del nivel");
 				respuesta.agregarMensaje("esencia ingresada: "+esenciaTotal);
 				respuesta.agregarMensaje("esencia del nivel: "+esenciaMax);
 			}
+			
 		} catch (Exception e) {
 			respuesta.error(e);
 			e.printStackTrace();
@@ -138,11 +159,16 @@ public class CombateController implements ControladorDeCombate {
 		return respuesta;
 	}
     
+	//TODO: aca guardaria todo lo que paso en la pelea?
 	public void loggear(String mensaje) {
 		Respuesta respuesta = new Respuesta();
 		respuesta.agregarMensaje(mensaje);
+	}
 
-		handler.enviar(this.sessionId, respuesta);
+	public void turnoEnemigo(Map resultado) {
+		Respuesta respuesta = new Respuesta();
+		respuesta.put("data", resultado);
+		handler.enviar(this.sessionId, respuesta);		
 	}
 	
 	public void destruir() {}

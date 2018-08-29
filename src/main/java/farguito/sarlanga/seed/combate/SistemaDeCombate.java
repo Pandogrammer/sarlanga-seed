@@ -2,10 +2,7 @@ package farguito.sarlanga.seed.combate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Service;
+import java.util.Map;
 
 import farguito.sarlanga.seed.acciones.Accion;
 
@@ -51,8 +48,12 @@ public class SistemaDeCombate extends Thread {
 		prendido = false;
 	}
 	
+	public void iniciar() {
+		this.start();		
+	}
 	
-	public boolean iniciar(List<Aliado> aliados,List<Enemigo> enemigos) {
+	
+	public boolean preparar(List<Aliado> aliados,List<Enemigo> enemigos) {
 		personajes = new ArrayList<>();
 		turnos = new ArrayList<>();
 		
@@ -77,21 +78,20 @@ public class SistemaDeCombate extends Thread {
 			estado = EstadoDeCombate.TURNO_ENEMIGO;
 		
 		
-		this.start();
-		
 		return true;
 	}
 	
-	public String accionar(Integer objetivoId, Accion accion) {
+	public Map accionar(Integer objetivoId, Accion accion) {
 		estado = EstadoDeCombate.ANIMACION;
 		
-		String mensaje = accion.ejecutar(personajeActivo, personajes.get(objetivoId));
-		log(mensaje);
+		Map resultado = accion.ejecutar(personajeActivo, personajes.get(objetivoId));
+		
+		log((String) resultado.get("mensaje"));
 		
 		personajeActivo = null;
 		estado = EstadoDeCombate.EN_ESPERA;
 		
-		return mensaje;
+		return resultado;
 	}
 
 	
@@ -147,7 +147,12 @@ public class SistemaDeCombate extends Thread {
 	private void turnoEnemigo() {
 		Enemigo enemigo = (Enemigo) personajeActivo;
 		enemigo.getEstrategia().preparar(personajes);
-		accionar(enemigo.getEstrategia().getObjetivo().getId(), enemigo.getEstrategia().getAccion());
+		Integer objetivoId = enemigo.getEstrategia().getObjetivo().getId();
+		Accion accion = enemigo.getEstrategia().getAccion();
+		
+		Map resultado = accionar(objetivoId, accion);
+		
+		controlador.turnoEnemigo(resultado);
 	}
 
 	public List<PersonajeDeCombate> getPersonajes() {

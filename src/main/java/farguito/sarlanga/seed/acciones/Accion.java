@@ -2,6 +2,7 @@ package farguito.sarlanga.seed.acciones;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 
@@ -13,7 +14,7 @@ public abstract class Accion {
 	protected List<TiposDeAccion> tipos = new ArrayList<>();
 	protected PersonajeDeCombate origen;
 	
-	public abstract String ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino);
+	public abstract Map ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino);
 
 	public List<TiposDeAccion> getTipos() {
 		return tipos;
