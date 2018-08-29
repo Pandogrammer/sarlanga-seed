@@ -25,6 +25,33 @@ public class SistemaDeCombate extends Thread {
 	//DUDAS
 	private ControladorDeCombate controlador;
 
+
+	private boolean prendido = true;
+	private int segundosPausa = 100; //10
+	
+	public void run() {
+		try {
+			while(true) {
+				if(prendido) {
+					actualizar();
+					Thread.sleep(segundosPausa); //TODO: hace falta?
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void seguir() {
+		log("seguir");
+		prendido = true;
+	}
+	public void pausar() {
+		log("pausar");
+		prendido = false;
+	}
+	
+	
 	public boolean iniciar(List<Aliado> aliados,List<Enemigo> enemigos) {
 		personajes = new ArrayList<>();
 		turnos = new ArrayList<>();
@@ -67,30 +94,6 @@ public class SistemaDeCombate extends Thread {
 		return mensaje;
 	}
 
-	boolean prendido = true;
-	int segundosPausa = 100; //10
-	public void seguir() {
-		log("seguir");
-		prendido = true;
-	}
-	public void pausar() {
-		log("pausar");
-		prendido = false;
-	}
-	
-	//websocket
-	public void run() {
-		try {
-			while(true) {
-				if(prendido) {
-					actualizar();
-					Thread.sleep(segundosPausa);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	
 	public void actualizar() {
@@ -192,9 +195,5 @@ public class SistemaDeCombate extends Thread {
 	public void setControlador(ControladorDeCombate controlador) {
 		this.controlador = controlador;
 	}
-
-	
-	
-	
 	
 }

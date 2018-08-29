@@ -2,6 +2,7 @@ package farguito.sarlanga.seed.websocket;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -14,15 +15,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.websocket.objetos.CombateRequest;
 import farguito.sarlanga.seed.websocket.objetos.IniciarDTO;
-import io.undertow.util.CopyOnWriteMap;
 
-@Component("combateWebSocketHandler")
+@Component
 public class CombateWebSocketHandler extends TextWebSocketHandler {
 	
 	ObjectMapper mapper = new ObjectMapper();
 
-	private Map<String, CombateWebSocketController> controllers = new CopyOnWriteMap();
-	private Map<String, WebSocketSession> sesiones = new CopyOnWriteMap();
+	private Map<String, WebSocketSession> sesiones = new ConcurrentHashMap<>();
+	private Map<String, CombateController> controladores = new ConcurrentHashMap<>();
 	
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
@@ -36,17 +36,17 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			switch (request.getMetodo()) {
 			case "iniciar" : {
 				IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
-				rta.agregar("data", controllers.get(sessionId).iniciar(dto.getPjs(), dto.getNivel())); 
+				rta.agregar("data", controladores.get(sessionId).iniciar(dto.getPjs(), dto.getNivel())); 
 				break;
 			}
 			case "informacion_nivel" : {
 				Map dto = mapper.convertValue(request.getData(), Map.class);
-				rta.agregar("data", controllers.get(sessionId).informacionNivel((Integer) dto.get("nivel"))); 
+				rta.agregar("data", controladores.get(sessionId).informacionNivel((Integer) dto.get("nivel"))); 
 				break;
 			}
 			case "creacion_nivel" : {
 				Map dto = mapper.convertValue(request.getData(), Map.class);
-				rta.agregar("data", controllers.get(sessionId).creacionNivel());
+				rta.agregar("data", controladores.get(sessionId).creacionNivel());
 				break;
 			}
 			default : break;
@@ -59,10 +59,8 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			System.out.println(message.getPayload());
 		}
 	}
-	
+
 	public void broadcast(Map message) {
-		System.out.println("Sesiones: "+sesiones.size());
-		System.out.println("Controllers: "+controllers.size());
 		for(String sessionId : sesiones.keySet()) {
 			enviar(sessionId, message);
 		}
@@ -71,10 +69,10 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	
 	//ponele que entendi por qué funciona con synchronized
 	public synchronized void enviar(String sessionId, Map message) {
+		System.out.println(message);
 		try {
-			System.out.println("Sesiones: "+sesiones.size());
-			System.out.println("Controllers: "+controllers.size());
-			sesiones.get(sessionId).sendMessage(new TextMessage(mapper.writeValueAsString(message)));
+			if(controladores.get(sessionId).conectado())
+				sesiones.get(sessionId).sendMessage(new TextMessage(mapper.writeValueAsString(message)));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
@@ -83,22 +81,33 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	//TODO: mandarme el session id? y mandarlo en el request? usar seguridad onda JWT?
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("logueado: "+session.getId());
+		String sessionId = session.getId();
 		//re-agarrar el controller si relogueo?
-		controllers.put(session.getId(), new CombateWebSocketController(session.getId()));
+		CombateController cc = new CombateController(sessionId);
+		cc.setHandler(this);
 		
-		sesiones.put(session.getId(), session);
+		if(controladores.containsKey(sessionId)) {
+			controladores.get(sessionId).conectado();
+		} else {		
+			controladores.put(sessionId, cc);
+		}
+		
+		sesiones.put(sessionId, session);
+		
+		System.out.println("logueado: "+sessionId);
 	}
 	
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		System.out.println("deslogueado: "+session.getId());
-		//mantener el controller vivo por si se vuelve a loguear?
-		controllers.get(session.getId()).destruir();
-		controllers.remove(session.getId());	
+		String sessionId = session.getId();
 		
-		sesiones.remove(session.getId());	
+		//mantener el controller vivo por si se vuelve a loguear?	
+		controladores.get(sessionId).desconectar();
+		
+		sesiones.remove(sessionId);
+		
+		System.out.println("deslogueado: "+sessionId);
 	}
 	
 }

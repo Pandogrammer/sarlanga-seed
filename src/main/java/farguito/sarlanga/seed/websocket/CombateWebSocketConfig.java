@@ -8,7 +8,9 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @Configuration
 @EnableWebSocket
 public class CombateWebSocketConfig implements WebSocketConfigurer {
+	
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		registry.addHandler(new CombateWebSocketHandler(), "/combate");
 	}
+	
 }

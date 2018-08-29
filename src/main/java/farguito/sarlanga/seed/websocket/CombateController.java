@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.web.socket.WebSocketSession;
+
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.SarlangaContext;
 import farguito.sarlanga.seed.acciones.Accion;
@@ -19,9 +21,9 @@ import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
 import farguito.sarlanga.seed.criaturas.Personaje;
 import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
-import farguito.sarlanga.seed.websocket.objetos.TurnoAccionIN;
 
-public class CombateWebSocketController implements ControladorDeCombate {
+
+public class CombateController implements ControladorDeCombate {
 		
 	private FabricaDeCriaturas fabCriaturas;
 	
@@ -33,27 +35,19 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	
 	private String sessionId;
 	private CombateWebSocketHandler handler;
+	private boolean conectado = false;
 	
 	private List<Aliado> personajes;
 	private Integer nivelElegido;
 	
-	//is this frula?
-	public CombateWebSocketController(String sessionId) {
+	//is this frula? v2.0
+	public CombateController(String sessionId) {
 		this.sessionId = sessionId;
 		fabCriaturas = (FabricaDeCriaturas) SarlangaContext.getAppContext().getBean("fabricaDeCriaturas");
 		fabAcciones = (FabricaDeAcciones) SarlangaContext.getAppContext().getBean("fabricaDeAcciones");
 		niveles = (RepositorioDeNiveles) SarlangaContext.getAppContext().getBean("repositorioDeNiveles");
-		handler = (CombateWebSocketHandler) SarlangaContext.getAppContext().getBean("combateWebSocketHandler");
 	}
 	
-    public void turnoAccion(TurnoAccionIN turnoAccion){ 
-    	try{
-    		combate.accionar(turnoAccion.getObjetivoId(), combate.getPersonajeActivo().getAcciones().get(turnoAccion.getAccionId()));    	
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    }
-
 	public void pasarNivel() {
 		try {
 			if(combate.getEstado() == EstadoDeCombate.VICTORIA)
@@ -144,32 +138,32 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		return respuesta;
 	}
     
-	private void enviarOtro(String sessionId, Respuesta respuesta) {
-	   handler.enviar(sessionId, respuesta);
-	}
-	
-	private void enviarSesion(Respuesta respuesta) {		
-		handler.enviar(this.sessionId, respuesta);		
-	}
-	
-	private void enviarTodos(Respuesta respuesta) {
-		handler.broadcast(respuesta);
-	}
-	//de alguna forma tengo que mantener la conexion controller -> handler
 	public void loggear(String mensaje) {
-		System.out.println(this.sessionId+": "+mensaje);
 		Respuesta respuesta = new Respuesta();
 		respuesta.agregarMensaje(mensaje);
-		handler = (CombateWebSocketHandler) SarlangaContext.getAppContext().getBean("combateWebSocketHandler");
-		handler.broadcast(respuesta);
+
+		handler.enviar(this.sessionId, respuesta);
 	}
 	
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
 	public void destruir() {}
+	
+	public void desconectar() {
+		this.conectado = false;
+		combate.pausar();
+	}
+	
+	public void conectar() {
+		this.conectado = true;
+		combate.seguir();
+	}
+	
+	public boolean conectado() {
+		return conectado;
+	}
+	
+	public void setHandler(CombateWebSocketHandler handler) {
+		this.handler = handler;
+	}
 	
 	
 
