@@ -15,7 +15,7 @@ public class SistemaDeCombate extends Thread {
 	//TODO: hacerlo mejor, no necesito TODO el personaje, solo id y enfriamiento, o armarme un map<id, pj> para targetear
 	private List<PersonajeDeCombate> turnos = new ArrayList<>(); 
 	
-	private EstadoDeCombate estado = EstadoDeCombate.EN_ESPERA;
+	private EstadoDeCombate estado = EstadoDeCombate.ANIMACION;
 	
 	//falso logger
 	private List<String> mensajes = new ArrayList<>();
@@ -89,7 +89,6 @@ public class SistemaDeCombate extends Thread {
 		log((String) resultado.get("mensaje"));
 		
 		personajeActivo = null;
-		estado = EstadoDeCombate.EN_ESPERA;
 		
 		return resultado;
 	}
@@ -166,7 +165,11 @@ public class SistemaDeCombate extends Thread {
 	public EstadoDeCombate getEstado() {
 		return estado;
 	}
-	
+		
+	public void setEstado(EstadoDeCombate estado) {
+		this.estado = estado;
+	}
+
 	public boolean isTurnoJugador() {
 		return estado.equals(EstadoDeCombate.TURNO_JUGADOR);
 	}

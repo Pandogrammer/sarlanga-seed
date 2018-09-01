@@ -37,7 +37,6 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			case "iniciar" : {
 				IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
 				rta.agregar("data", controladores.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()));
-				enviar(sessionId, rta);
 				break;
 			}
 			case "informacion_nivel" : {
@@ -48,6 +47,10 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			case "creacion_nivel" : {
 				Map dto = mapper.convertValue(request.getData(), Map.class);
 				rta.agregar("data", controladores.get(sessionId).creacionNivel());
+				break;
+			}
+			case "animacion_completada" : {
+				controladores.get(sessionId).animacionCompletada();
 				break;
 			}
 			default : break;
@@ -89,7 +92,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 		cc.setHandler(this);
 		
 		if(controladores.containsKey(sessionId)) {
-			controladores.get(sessionId).conectado();
+			controladores.get(sessionId).conectar();
 		} else {		
 			controladores.put(sessionId, cc);
 		}
@@ -105,8 +108,10 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 		String sessionId = session.getId();
 		
 		//mantener el controller vivo por si se vuelve a loguear?	
-		controladores.get(sessionId).desconectar();
-		
+		//controladores.get(sessionId).desconectar();
+
+		controladores.remove(sessionId);
+
 		sesiones.remove(sessionId);
 		
 		System.out.println("deslogueado: "+sessionId);

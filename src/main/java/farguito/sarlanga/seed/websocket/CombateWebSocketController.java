@@ -3,7 +3,6 @@ package farguito.sarlanga.seed.websocket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	
 	private String sessionId;
 	private CombateWebSocketHandler handler;
-	private boolean conectado = false;
+	private boolean conectado = true;
 	
 	private List<Aliado> personajes;
 	private Integer nivelElegido;
@@ -106,7 +105,6 @@ public class CombateWebSocketController implements ControladorDeCombate {
 				respuesta.agregar("aliados", aliados);
 				respuesta.agregar("enemigos", enemigos);
 
-				//TODO: deberia ir aparte
 				combate.iniciar();
 			} else {
 				respuesta.agregarMensaje("la cantidad de esencia es mayor a la del nivel");
@@ -171,16 +169,20 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		handler.enviar(this.sessionId, respuesta);		
 	}
 	
-	public void destruir() {}
+	public void animacionCompletada() {
+		combate.setEstado(EstadoDeCombate.EN_ESPERA);
+	}
 	
+	public void destruir() {}
+		
 	public void desconectar() {
 		this.conectado = false;
-		combate.pausar();
+		if (combate != null) combate.pausar();
 	}
 	
 	public void conectar() {
 		this.conectado = true;
-		combate.seguir();
+		if (combate != null) combate.seguir();
 	}
 	
 	public boolean conectado() {
