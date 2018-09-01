@@ -13,6 +13,7 @@ import farguito.sarlanga.seed.criaturas.Personaje;
 public abstract class PersonajeDeCombate {
 	
 	private Integer id;
+	private Integer posicion;
 	private Personaje pjBase;
 	private int vida;
 	private int vidaMax;
@@ -22,7 +23,8 @@ public abstract class PersonajeDeCombate {
 	private boolean vivo = true;
 	private List<Accion> acciones;
 	
-	public PersonajeDeCombate(Personaje pj, List<Accion> acciones) {
+	public PersonajeDeCombate(Integer posicion, Personaje pj, List<Accion> acciones) {
+		this.posicion = posicion;
 		this.pjBase = pj;
 		this.ataque = pj.getAtaque();		
 		this.vida = pj.getVida();
@@ -116,7 +118,12 @@ public abstract class PersonajeDeCombate {
 
 	public Personaje getPjBase() {
 		return pjBase;
-	}	
+	}
+
+	public Integer getPosicion() {
+		return posicion;
+	}
+	
 	
 	
 }

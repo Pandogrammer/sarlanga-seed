@@ -71,8 +71,8 @@ public class CombateWebSocketController implements ControladorDeCombate {
 			int esenciaMax = niveles.get(nivel).getEsencia();
 			
 			for(PersonajeDeCombateDTO pj : pjs){
-				Personaje pjPersonaje = this.fabCriaturas.crear(pj.getCriatura());
-				esenciaTotal += pjPersonaje.getEsencia();
+				Personaje pjCriatura = this.fabCriaturas.crear(pj.getCriatura());
+				esenciaTotal += pjCriatura.getEsencia();
 				
 				List<Accion> pjAcciones = new ArrayList<>();			
 				for(Acciones a : pj.getAcciones()) {
@@ -81,7 +81,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 					pjAcciones.add(ac);
 				}
 
-				personajes.add(new Aliado(pjPersonaje, pjAcciones));
+				personajes.add(new Aliado(pj.getPosicion(), pjCriatura, pjAcciones));
 			}
 			
 			if(esenciaTotal <= esenciaMax) {

@@ -62,7 +62,8 @@ public class Nivel {
 		personajes.stream().forEach(pj -> {
 			enemigos.add(
 					new Enemigo(
-							pj.getPjBase()
+							pj.getPosicion()
+						  , pj.getPjBase()
 						  , pj.getAcciones()
 						  , crearIA()));
 		});

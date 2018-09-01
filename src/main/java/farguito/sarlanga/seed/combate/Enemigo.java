@@ -10,8 +10,8 @@ public class Enemigo extends PersonajeDeCombate {
 	
 	EstrategiaDeCombate estrategia;
 
-	public Enemigo(Personaje pj, List<Accion> acciones, EstrategiaDeCombate estrategia) {
-		super(pj, acciones);		
+	public Enemigo(Integer posicion, Personaje pj, List<Accion> acciones, EstrategiaDeCombate estrategia) {
+		super(posicion, pj, acciones);		
 		setEstrategia(estrategia);
 	}	
 	

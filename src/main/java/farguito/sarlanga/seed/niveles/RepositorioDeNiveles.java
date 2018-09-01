@@ -42,15 +42,15 @@ public class RepositorioDeNiveles {
 		
 		acciones = new ArrayList<>();
 		acciones.add(fabAcciones.crear(Acciones.GOLPE));
-		pjs.add(new Aliado(fabCriaturas.crear(Criaturas.RATA), acciones));
+		pjs.add(new Aliado(1, fabCriaturas.crear(Criaturas.RATA), acciones));
 
 		acciones = new ArrayList<>();
 		acciones.add(fabAcciones.crear(Acciones.ARAÑAZO));
-		pjs.add(new Aliado(fabCriaturas.crear(Criaturas.RATA), acciones));
+		pjs.add(new Aliado(2, fabCriaturas.crear(Criaturas.RATA), acciones));
 		
 		acciones = new ArrayList<>();
 		acciones.add(fabAcciones.crear(Acciones.ARAÑAZO));
-		pjs.add(new Aliado(fabCriaturas.crear(Criaturas.RATA), acciones));
+		pjs.add(new Aliado(3, fabCriaturas.crear(Criaturas.RATA), acciones));
 		
 		
 		agregar(3, pjs);

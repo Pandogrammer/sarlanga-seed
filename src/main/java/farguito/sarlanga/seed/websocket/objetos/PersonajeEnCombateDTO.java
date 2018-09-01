@@ -13,12 +13,14 @@ import farguito.sarlanga.seed.criaturas.Criaturas;
 public class PersonajeEnCombateDTO {
 
 	private Integer id;
+	private Integer posicion;
 	private Criaturas criatura;
 	private List<Acciones> acciones = new ArrayList<>();
 	
 			
 	public PersonajeEnCombateDTO(PersonajeDeCombate personaje) {
 		this.id = personaje.getId();
+		this.posicion = personaje.getPosicion();
 		this.criatura = personaje.getPjBase().getRaza();
 		personaje.getAcciones().stream().forEach(a -> {
 			this.acciones.add(a.getAccion());
@@ -29,6 +31,10 @@ public class PersonajeEnCombateDTO {
 
 	public Integer getId() {
 		return id;
+	}
+	
+	public Integer getPosicion() {
+		return posicion;
 	}
 
 	public Criaturas getCriatura() {

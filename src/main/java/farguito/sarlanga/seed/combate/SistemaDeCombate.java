@@ -70,12 +70,13 @@ public class SistemaDeCombate extends Thread {
 		});		
 		
 		turnos.sort((pj1, pj2) -> pj2.getVelocidad() - pj1.getVelocidad());
-		
+		/*
 		personajeActivo = turnos.get(0); 
 		if(personajeActivo instanceof Aliado)
 			estado = EstadoDeCombate.TURNO_JUGADOR;
 		else
 			estado = EstadoDeCombate.TURNO_ENEMIGO;
+		*/
 		
 		
 		return true;

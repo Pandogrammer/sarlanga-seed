@@ -7,8 +7,8 @@ import farguito.sarlanga.seed.criaturas.Personaje;
 
 public class Aliado extends PersonajeDeCombate {
 
-	public Aliado(Personaje pj, List<Accion> acciones) {
-		super(pj, acciones);
+	public Aliado(Integer posicion, Personaje pj, List<Accion> acciones) {
+		super(posicion, pj, acciones);
 	}
 
 }

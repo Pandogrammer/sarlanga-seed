@@ -135,7 +135,7 @@ public class CombateRestController {
 					pjAcciones.add(ac);
 				}
 
-				personajes.add(new Aliado(pjPersonaje, pjAcciones));
+				personajes.add(new Aliado(personajes.size()+1, pjPersonaje, pjAcciones));
 			}
 			if(esenciaTotal <= esenciaMax) {
 				combate = new SistemaDeCombate();
