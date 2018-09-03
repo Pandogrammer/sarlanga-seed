@@ -168,6 +168,15 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		respuesta.put("canal", "combate");
 		respuesta.put("metodo", "turno_enemigo");
 		respuesta.put("data", resultado);
+		System.out.println(respuesta);
+		handler.enviar(this.sessionId, respuesta);		
+	}
+	
+	public void estadoTurnos(Map resultado) {
+		Respuesta respuesta = new Respuesta();
+		respuesta.put("canal", "combate");
+		respuesta.put("metodo", "estado_turnos");
+		respuesta.put("data", resultado);
 		handler.enviar(this.sessionId, respuesta);		
 	}
 	

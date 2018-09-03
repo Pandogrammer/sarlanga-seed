@@ -1,6 +1,8 @@
 package farguito.sarlanga.seed.combate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,18 +40,15 @@ public class SistemaDeCombate extends Thread {
 			e.printStackTrace();
 		}
 	}
-
-	public void seguir() {
-		log("seguir");
-		prendido = true;
-	}
-	public void pausar() {
-		log("pausar");
-		prendido = false;
-	}
 	
-	public void iniciar() {
-		this.start();		
+	public void actualizar() {
+		switch(estado) {
+		case EN_ESPERA:     avanzarTurnos(); chequearVidas(); break;
+		case TURNO_ENEMIGO: turnoEnemigo(); break;
+		case VICTORIA:      victoria(); break;
+		case DERROTA:       derrota(); break;		
+		default: break;
+		}
 	}
 	
 	
@@ -70,14 +69,6 @@ public class SistemaDeCombate extends Thread {
 		});		
 		
 		turnos.sort((pj1, pj2) -> pj2.getVelocidad() - pj1.getVelocidad());
-		/*
-		personajeActivo = turnos.get(0); 
-		if(personajeActivo instanceof Aliado)
-			estado = EstadoDeCombate.TURNO_JUGADOR;
-		else
-			estado = EstadoDeCombate.TURNO_ENEMIGO;
-		*/
-		
 		
 		return true;
 	}
@@ -94,25 +85,6 @@ public class SistemaDeCombate extends Thread {
 		return resultado;
 	}
 
-	
-	
-	public void actualizar() {
-		switch(estado) {
-		case EN_ESPERA:     avanzarTurnos(); chequearVidas(); break;
-		case TURNO_ENEMIGO: turnoEnemigo(); break;
-		case VICTORIA:      victoria(); break;
-		case DERROTA:       derrota(); break;		
-		default: break;
-		}
-	}
-	
-	private void victoria() {
-		this.interrupt();
-	}
-	
-	private void derrota() {
-		this.interrupt();
-	}
 	
 	private void avanzarTurnos() {
 		turnos.sort((pj1, pj2) -> pj2.getEnfriamiento() - pj1.getEnfriamiento());
@@ -140,8 +112,8 @@ public class SistemaDeCombate extends Thread {
 			
 			i++;
 		}
-		
-		
+
+		estadoTurnos();
 	}
 	
 	private void turnoEnemigo() {
@@ -154,7 +126,72 @@ public class SistemaDeCombate extends Thread {
 		
 		controlador.turnoEnemigo(resultado);
 	}
+	
 
+	private void chequearVidas() {
+		boolean aliadoVivo = false;
+		boolean enemigoVivo = false;
+		aliadoVivo = (personajes.stream().anyMatch(pj -> pj.isVivo() && pj instanceof Aliado));
+		enemigoVivo = (personajes.stream().anyMatch(pj -> pj.isVivo() && pj instanceof Enemigo));
+
+		if(enemigoVivo && !aliadoVivo) {
+			estado = EstadoDeCombate.DERROTA;
+			log("DERROTA");
+		}
+		else if(aliadoVivo && !enemigoVivo) {
+			estado = EstadoDeCombate.VICTORIA;
+			log("VICTORIA");
+		}
+	}
+	
+
+	
+	public Map estadoTurnos() {
+		Map resultado = new HashMap<>();
+		List<Map> estados = new ArrayList<>();		
+		
+		personajes.stream().forEach(pj -> {
+			Map estado = new HashMap<>();
+			estado.put("vida", pj.getVida());
+			estado.put("vida_max", pj.getVidaMax());
+			estados.add(estado);
+		});
+		
+		resultado.put("estados", estados);
+		
+		controlador.estadoTurnos(resultado);		
+		
+		return resultado;		
+	}
+	
+
+
+	public void seguir() {
+		log("seguir");
+		prendido = true;
+	}
+	public void pausar() {
+		log("pausar");
+		prendido = false;
+	}
+	
+	public void iniciar() {
+		this.start();		
+	}
+	
+
+	private void victoria() {
+		this.interrupt();
+	}
+	
+	private void derrota() {
+		this.interrupt();
+	}
+	
+	
+	
+	
+	
 	public List<PersonajeDeCombate> getPersonajes() {
 		return personajes;
 	}
@@ -175,22 +212,6 @@ public class SistemaDeCombate extends Thread {
 		return estado.equals(EstadoDeCombate.TURNO_JUGADOR);
 	}
 	
-	private void chequearVidas() {
-		boolean aliadoVivo = false;
-		boolean enemigoVivo = false;
-		aliadoVivo = (personajes.stream().anyMatch(pj -> pj.isVivo() && pj instanceof Aliado));
-		enemigoVivo = (personajes.stream().anyMatch(pj -> pj.isVivo() && pj instanceof Enemigo));
-
-		if(enemigoVivo && !aliadoVivo) {
-			estado = EstadoDeCombate.DERROTA;
-			log("DERROTA");
-		}
-		else if(aliadoVivo && !enemigoVivo) {
-			estado = EstadoDeCombate.VICTORIA;
-			log("VICTORIA");
-		}
-	}
-
 	public List<String> getMensajes() {
 		return mensajes;
 	}
