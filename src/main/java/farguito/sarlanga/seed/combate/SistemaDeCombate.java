@@ -77,6 +77,9 @@ public class SistemaDeCombate extends Thread {
 		estado = EstadoDeCombate.ANIMACION;
 		
 		Map resultado = accion.ejecutar(personajeActivo, personajes.get(objetivoId));
+
+		resultado.put("enemigo", personajes.get(objetivoId) instanceof Enemigo);
+		
 		
 		log((String) resultado.get("mensaje"));
 		
@@ -100,6 +103,7 @@ public class SistemaDeCombate extends Thread {
 					if(personajeActivo instanceof Aliado) {
 						estado = EstadoDeCombate.TURNO_JUGADOR;
 						log("TURNO_JUGADOR");
+						avisarTurnoJugador();
 					} else {
 						estado = EstadoDeCombate.TURNO_ENEMIGO;
 						log("TURNO_ENEMIGO");
@@ -116,6 +120,14 @@ public class SistemaDeCombate extends Thread {
 		estadoTurnos();
 	}
 	
+	private void avisarTurnoJugador() {
+		Map resultado = new HashMap<>();		
+		resultado.put("id", personajeActivo.getId());		
+		controlador.turnoJugador(resultado);
+		
+	}
+	
+	
 	private void turnoEnemigo() {
 		Enemigo enemigo = (Enemigo) personajeActivo;
 		enemigo.getEstrategia().preparar(personajes);
@@ -124,7 +136,7 @@ public class SistemaDeCombate extends Thread {
 		
 		Map resultado = accionar(objetivoId, accion);
 		
-		controlador.turnoEnemigo(resultado);
+		controlador.animarTurno(resultado);
 	}
 	
 

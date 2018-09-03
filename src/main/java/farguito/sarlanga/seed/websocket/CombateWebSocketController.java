@@ -58,6 +58,11 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		}
 	}	
     
+	public void accionJugador(int objetivoId, int accionId) {
+		animarTurno(combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId)));		
+	}
+	
+	
 	public Respuesta iniciar(
 			List<PersonajeDeCombateDTO> pjs,
 			Integer nivel
@@ -163,12 +168,20 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		respuesta.agregarMensaje(mensaje);
 	}
 
-	public void turnoEnemigo(Map resultado) {
+	
+	public void turnoJugador(Map resultado) {
 		Respuesta respuesta = new Respuesta();
 		respuesta.put("canal", "combate");
-		respuesta.put("metodo", "turno_enemigo");
+		respuesta.put("metodo", "turno_jugador");
 		respuesta.put("data", resultado);
-		System.out.println(respuesta);
+		handler.enviar(this.sessionId, respuesta);			
+	}
+	
+	public void animarTurno(Map resultado) {
+		Respuesta respuesta = new Respuesta();
+		respuesta.put("canal", "combate");
+		respuesta.put("metodo", "animar_turno");
+		respuesta.put("data", resultado);
 		handler.enviar(this.sessionId, respuesta);		
 	}
 	

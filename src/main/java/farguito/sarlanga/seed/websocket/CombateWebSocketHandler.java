@@ -53,6 +53,12 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 				controladores.get(sessionId).animacionCompletada();
 				break;
 			}
+			case "accion_jugador" : {
+				Map dto = mapper.convertValue(request.getData(), Map.class);
+				System.out.println(dto);
+				controladores.get(sessionId).accionJugador((Integer) dto.get("objetivo"), (Integer) dto.get("accion"));
+				break;
+			}
 			default : break;
 			}
 			
