@@ -30,8 +30,9 @@ public class Golpe extends Accion {
 		Map<String, Object> resultado = new HashMap();
 		
 		resultado.put("origen", origen.getId());
-		resultado.put("daño", daño);
 		resultado.put("destino", destino.getId());
+		resultado.put("accion", this.accion);
+		resultado.put("daño", daño);
 		resultado.put("mensaje", mensaje);
 		
 		return resultado;

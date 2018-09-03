@@ -25,7 +25,7 @@ import farguito.sarlanga.seed.websocket.objetos.PersonajeEnCombateDTO;
 
 
 public class CombateWebSocketController implements ControladorDeCombate {
-		
+			
 	private FabricaDeCriaturas fabCriaturas;
 	
 	private FabricaDeAcciones fabAcciones;
@@ -165,6 +165,8 @@ public class CombateWebSocketController implements ControladorDeCombate {
 
 	public void turnoEnemigo(Map resultado) {
 		Respuesta respuesta = new Respuesta();
+		respuesta.put("canal", "combate");
+		respuesta.put("metodo", "turno_enemigo");
 		respuesta.put("data", resultado);
 		handler.enviar(this.sessionId, respuesta);		
 	}
