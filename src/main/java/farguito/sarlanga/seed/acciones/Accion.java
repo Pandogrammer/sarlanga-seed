@@ -12,6 +12,8 @@ public abstract class Accion {
 	protected int esencia;
 	protected int cansancio;
 	protected List<TiposDeAccion> tipos = new ArrayList<>();
+	protected List<Map> efectos = new ArrayList<>(); //a definir bien
+	protected boolean melee;
 	protected PersonajeDeCombate origen;
 	
 	public abstract Map ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino);
@@ -30,6 +32,10 @@ public abstract class Accion {
 
 	public int getEsencia() {
 		return esencia;
+	}
+
+	public boolean isMelee() {
+		return melee;
 	}
 	
 	

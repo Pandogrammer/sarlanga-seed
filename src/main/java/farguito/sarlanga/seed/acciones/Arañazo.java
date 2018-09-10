@@ -13,6 +13,7 @@ public class Arañazo extends Accion {
 
 	public Arañazo() {
 		this.accion = Acciones.ARAÑAZO;
+		this.melee = true;
 		this.esencia = 0;
 		this.cansancio = 65;
 		
@@ -28,11 +29,14 @@ public class Arañazo extends Accion {
 		String mensaje = origen.getNombre()+" arañó a "+destino.getNombre()+" causando "+daño+" de daño";
 
 		Map<String, Object> resultado = new HashMap();
+				
+		this.efectos.add(Efectos.daño(daño));
 		
 		resultado.put("origen", origen.getId());
 		resultado.put("destino", destino.getId());
 		resultado.put("accion", this.accion);
-		resultado.put("daño", daño);
+		resultado.put("melee", this.melee);
+		resultado.put("efectos", this.efectos);
 		resultado.put("mensaje", mensaje);
 		
 		return resultado;

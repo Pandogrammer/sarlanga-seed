@@ -193,6 +193,24 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		handler.enviar(this.sessionId, respuesta);		
 	}
 	
+	public void victoria() {
+		pasarNivel();
+		Respuesta respuesta = new Respuesta();
+		respuesta.put("canal", "combate");
+		respuesta.put("metodo", "victoria");
+		handler.enviar(this.sessionId, respuesta);			
+		
+	}
+	
+	public void derrota() {
+		Respuesta respuesta = new Respuesta();
+		respuesta.put("canal", "combate");
+		respuesta.put("metodo", "derrota");
+		handler.enviar(this.sessionId, respuesta);	
+		
+	}
+	
+	
 	public void animacionCompletada() {
 		combate.setEstado(EstadoDeCombate.EN_ESPERA);
 	}

@@ -193,11 +193,15 @@ public class SistemaDeCombate extends Thread {
 	
 
 	private void victoria() {
+		this.prendido = false;
 		this.interrupt();
+		controlador.victoria();
 	}
 	
 	private void derrota() {
+		this.prendido = false;
 		this.interrupt();
+		controlador.derrota();
 	}
 	
 	

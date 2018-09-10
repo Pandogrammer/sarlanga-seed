@@ -1,6 +1,8 @@
 package farguito.sarlanga.seed.acciones;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import farguito.sarlanga.seed.Respuesta;
@@ -13,6 +15,7 @@ public class Golpe extends Accion {
 
 	public Golpe() {
 		this.accion = Acciones.GOLPE;
+		this.melee = true;
 		this.esencia = 0;
 		this.cansancio = 100;
 		
@@ -29,10 +32,13 @@ public class Golpe extends Accion {
 
 		Map<String, Object> resultado = new HashMap();
 		
+		this.efectos.add(Efectos.daño(daño));
+		
 		resultado.put("origen", origen.getId());
 		resultado.put("destino", destino.getId());
 		resultado.put("accion", this.accion);
-		resultado.put("daño", daño);
+		resultado.put("melee", this.melee);
+		resultado.put("efectos", this.efectos);
 		resultado.put("mensaje", mensaje);
 		
 		return resultado;

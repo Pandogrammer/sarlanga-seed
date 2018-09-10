@@ -34,9 +34,15 @@ public abstract class PersonajeDeCombate {
 	}
 		
 	public void dañar(int daño) {
-		vida -= daño;
-		if (vida <= 0)
-			vivo = false;
+		if (vivo) {
+			vida -= daño;
+			if (vida <= 0) {
+				vivo = false;
+				vida = 0;
+			}
+		} else {
+			//contadores de muerte? si sigo pegandole a algo que esta muerto, que pasa?
+		}
 	}
 
 	public void descansar() {

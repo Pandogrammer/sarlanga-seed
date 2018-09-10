@@ -12,5 +12,9 @@ public interface ControladorDeCombate {
 
 	public void estadoTurnos(Map resultado);
 
+	public void victoria();
+	
+	public void derrota();
+
 	
 }
