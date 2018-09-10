@@ -37,6 +37,7 @@ public class RepositorioDeNiveles {
 	
 	@PostConstruct
 	private void init() {
+		//nivel 1
 		List<PersonajeDeCombate> pjs = new ArrayList<>();
 		List<Accion> acciones;
 		
@@ -52,8 +53,27 @@ public class RepositorioDeNiveles {
 		acciones.add(fabAcciones.crear(Acciones.ARAÑAZO));
 		pjs.add(new Aliado(3, fabCriaturas.crear(Criaturas.RATA), acciones));
 		
-		
 		agregar(3, pjs);
+		
+
+		//nivel 2
+		pjs = new ArrayList<>();
+		
+		acciones = new ArrayList<>();
+		acciones.add(fabAcciones.crear(Acciones.ARAÑAZO));
+		pjs.add(new Aliado(4, fabCriaturas.crear(Criaturas.RATA), acciones));
+
+		acciones = new ArrayList<>();
+		acciones.add(fabAcciones.crear(Acciones.GOLPE));
+		pjs.add(new Aliado(2, fabCriaturas.crear(Criaturas.GOLEM), acciones));
+		
+		acciones = new ArrayList<>();
+		acciones.add(fabAcciones.crear(Acciones.ARAÑAZO));
+		pjs.add(new Aliado(5, fabCriaturas.crear(Criaturas.RATA), acciones));
+		
+		agregar(4, pjs);
+		
+		
 	}
 	
 	public Nivel get(Integer id) {

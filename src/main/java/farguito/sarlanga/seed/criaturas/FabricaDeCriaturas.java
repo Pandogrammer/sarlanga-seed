@@ -13,6 +13,7 @@ public class FabricaDeCriaturas {
 		switch(p) {
 		case RATA: return new Rata(); 
 		case GOLEM: return new Golem(); 
+		case QUIMERA: return new Quimera(); 
 		default: return null;
 		}
 	}
