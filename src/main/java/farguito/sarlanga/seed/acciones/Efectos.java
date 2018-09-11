@@ -23,4 +23,8 @@ public class Efectos {
 		return agregar("curacion", curacion);
 	}
 	
+	public static Map enlentecer(Integer enlentecer) {
+		return agregar("enlentecer", enlentecer);
+	}
+	
 }

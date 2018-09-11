@@ -13,6 +13,7 @@ public class FabricaDeAcciones {
 		switch(a) {
 		case GOLPE: return new Golpe(); 
 		case ARAÑAZO: return new Arañazo(); 
+		case ENRAIZAR: return new Enraizar(); 
 		default: return null;
 		}
 	}

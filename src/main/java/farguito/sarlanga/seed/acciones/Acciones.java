@@ -4,5 +4,6 @@ public enum Acciones {
 	
 	 GOLPE
    , ARAÑAZO
+   , ENRAIZAR
    
 }
