@@ -59,7 +59,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	}	
     
 	public void accionJugador(int objetivoId, int accionId) {
-		animarTurno(combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId)));		
+		enviar("combate", "animar_turno", combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId)));		
 	}
 	
 	
@@ -168,29 +168,14 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		respuesta.agregarMensaje(mensaje);
 	}
 
-	
-	public void turnoJugador(Map resultado) {
+	public void enviar(String canal, String metodo, Map data) {
 		Respuesta respuesta = new Respuesta();
-		respuesta.put("canal", "combate");
-		respuesta.put("metodo", "turno_jugador");
-		respuesta.put("data", resultado);
+		respuesta.put("canal", canal);
+		respuesta.put("metodo", metodo);
+		if (data != null)
+			respuesta.put("data", data);
+		
 		handler.enviar(this.sessionId, respuesta);			
-	}
-	
-	public void animarTurno(Map resultado) {
-		Respuesta respuesta = new Respuesta();
-		respuesta.put("canal", "combate");
-		respuesta.put("metodo", "animar_turno");
-		respuesta.put("data", resultado);
-		handler.enviar(this.sessionId, respuesta);		
-	}
-	
-	public void estadoTurnos(Map resultado) {
-		Respuesta respuesta = new Respuesta();
-		respuesta.put("canal", "combate");
-		respuesta.put("metodo", "estado_turnos");
-		respuesta.put("data", resultado);
-		handler.enviar(this.sessionId, respuesta);		
 	}
 	
 	public void victoria() {

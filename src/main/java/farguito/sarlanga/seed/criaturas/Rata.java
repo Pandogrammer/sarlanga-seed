@@ -9,7 +9,7 @@ public class Rata extends Personaje {
 		this.esencia = 1;
 		
 		this.vida = 30;
-		this.ataque = 10;
+		this.ataque = 8;
 		this.velocidad = 18;		
 	}
 

@@ -15,8 +15,9 @@ public class Enraizar extends Accion {
 		this.accion = Acciones.ENRAIZAR;
 		this.esencia = 1;
 		this.cansancio = 120;
-		
+
 		tipos.add(TiposDeAccion.UTILIDAD);
+		tipos.add(TiposDeAccion.OFENSIVO);
 	}
 	
 	public Map ejecutar(PersonajeDeCombate origen, PersonajeDeCombate destino) {

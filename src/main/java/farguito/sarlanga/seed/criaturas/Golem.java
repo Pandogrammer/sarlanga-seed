@@ -8,7 +8,7 @@ public class Golem extends Personaje {
 		this.raza = Criaturas.GOLEM;
 		this.esencia = 2;
 		
-		this.vida = 65;
+		this.vida = 85;
 		this.ataque = 18;
 		this.velocidad = 10;		
 	}

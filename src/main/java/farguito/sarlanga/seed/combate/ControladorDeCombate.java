@@ -6,15 +6,11 @@ public interface ControladorDeCombate {
 
 	public void loggear(String mensaje);
 
-	public void animarTurno(Map resultado);
-	
-	public void turnoJugador(Map resultado);
-
-	public void estadoTurnos(Map resultado);
-
 	public void victoria();
 	
 	public void derrota();
+
+	public void enviar(String canal, String metodo, Map resultado);
 
 	
 }
