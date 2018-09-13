@@ -30,26 +30,49 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 		try { 
 			String sessionId = session.getId();
 			CombateRequest request = mapper.readValue(message.getPayload(), CombateRequest.class);
-			Respuesta rta = new Respuesta();
+			Respuesta respuesta = new Respuesta();
 	
-			if (request.getId() != null) rta.agregar("id", request.getId());
+			if (request.getId() != null) respuesta.agregar("id", request.getId());
 			switch (request.getMetodo()) {
+
+			case "conectar" : {
+				CombateWebSocketController controlador;
+				if (!request.getData().isEmpty()) { //ya tiene sesion, se esta reconectando
+					String oldSessionId = (String) request.getData().get("session_id");
+					controlador = controladores.get(oldSessionId);
+					controladores.remove(oldSessionId);
+				} else {					
+					controlador = new CombateWebSocketController(sessionId);
+					controlador.setHandler(this);
+				}
+
+				controladores.put(sessionId, controlador);
+				
+				Respuesta sessionIdRta = new Respuesta("session_id", sessionId); //puaj							
+				respuesta.agregar("data", sessionIdRta);
+				break;
+			}
+
+			case "reconectado" : {
+				controladores.get(sessionId).conectar();
+				break;
+			}
+			
 			
 			case "iniciar" : {
-				IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
-				rta.agregar("data", controladores.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()));
+				IniciarDTO data = mapper.convertValue(request.getData(), IniciarDTO.class);
+				respuesta.agregar("data", controladores.get(sessionId).iniciar(data.getPjs(), data.getNivel()));
 				break;
 			}
 			
 			case "informacion_nivel" : {
-				Map dto = mapper.convertValue(request.getData(), Map.class);
-				rta.agregar("data", controladores.get(sessionId).informacionNivel((Integer) dto.get("nivel"))); 
+				respuesta.agregar("data", controladores.get(sessionId).informacionNivel(
+													(Integer) request.getData().get("nivel"))); 
 				break;
 			}
 			
 			case "creacion_nivel" : {
-				Map dto = mapper.convertValue(request.getData(), Map.class);
-				rta.agregar("data", controladores.get(sessionId).creacionNivel());
+				respuesta.agregar("data", controladores.get(sessionId).creacionNivel());
 				break;
 			}
 			
@@ -59,17 +82,20 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			}
 			
 			case "accion_jugador" : {
-				Map dto = mapper.convertValue(request.getData(), Map.class);
-				System.out.println(dto);
-				controladores.get(sessionId).accionJugador((Integer) dto.get("objetivo"), (Integer) dto.get("accion"));
+				controladores.get(sessionId).accionJugador(
+						(Integer) request.getData().get("objetivo"), 
+						(Integer) request.getData().get("accion"));
 				break;
 			}
 			
 			default : break;
+			
 			}
 			
 			//si tiene id implica que espera una respuesta, sino se debe disparar desde el controller, pasarlo para alla directamente?
-			if(request.getId() != null) enviar(sessionId, rta);
+			if(request.getId() != null) 
+				enviar(sessionId, respuesta);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(message.getPayload());
@@ -99,15 +125,6 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		String sessionId = session.getId();
-		//re-agarrar el controller si relogueo?
-		CombateWebSocketController cc = new CombateWebSocketController(sessionId);
-		cc.setHandler(this);
-		
-		if(controladores.containsKey(sessionId)) {
-			controladores.get(sessionId).conectar();
-		} else {		
-			controladores.put(sessionId, cc);
-		}
 		
 		sesiones.put(sessionId, session);
 		
@@ -120,10 +137,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		String sessionId = session.getId();
 		
-		//mantener el controller vivo por si se vuelve a loguear?	
 		controladores.get(sessionId).desconectar();
-
-		controladores.remove(sessionId);
 
 		sesiones.remove(sessionId);
 		

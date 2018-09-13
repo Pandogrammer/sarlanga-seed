@@ -197,9 +197,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	public void animacionCompletada() {
 		combate.setEstado(EstadoDeCombate.EN_ESPERA);
 	}
-	
-	public void destruir() {}
-		
+			
 	public void desconectar() {
 		this.conectado = false;
 		if (combate != null) combate.pausar();
