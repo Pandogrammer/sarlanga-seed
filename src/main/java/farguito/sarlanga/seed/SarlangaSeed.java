@@ -11,8 +11,3 @@ public class SarlangaSeed {
 	}
 	
 }
-
-/* TODO: le gran todowski
-	+ armar un logger piola
-*/
-

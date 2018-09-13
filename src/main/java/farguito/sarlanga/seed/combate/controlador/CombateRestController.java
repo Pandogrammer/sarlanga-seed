@@ -244,7 +244,7 @@ public class CombateRestController {
 	
 	//combate service
 	private List<Enemigo> crearEnemigos(Integer nivel) {
-		return niveles.get(nivel).getEnemigos();
+		return niveles.get(nivel).crearEnemigos();
 	}
 	
 	

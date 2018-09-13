@@ -1,6 +1,7 @@
 package farguito.sarlanga.seed.niveles;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,8 +17,10 @@ import farguito.sarlanga.seed.acciones.Acciones;
 import farguito.sarlanga.seed.acciones.FabricaDeAcciones;
 import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
+import farguito.sarlanga.seed.combate.controlador.PersonajeDeCombateDTO;
 import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;
+import farguito.sarlanga.seed.criaturas.Personaje;
 
 @Service
 @ApplicationScope
@@ -76,6 +79,10 @@ public class RepositorioDeNiveles {
 		
 	}
 	
+	public Map<Integer, Nivel> getAll(){
+		return niveles;
+	}
+	
 	public Nivel get(Integer id) {
 		return niveles.get(id);
 	}
@@ -94,8 +101,27 @@ public class RepositorioDeNiveles {
 		niveles.get(id).setPersonajes(pjs);	
 	}
 	
-	
-	public void agregar(int esencia, List<PersonajeDeCombate> pjs) {
+	public void agregar(Integer esencia, List<PersonajeDeCombate> pjs) {
 		niveles.put(niveles.size()+1, new Nivel(esencia, pjs));
+	}
+	
+
+	//esto no deberia ir aca pero buen, paja.
+	public List<PersonajeDeCombate> conversor(List<PersonajeDeCombateDTO> pjs){
+		List<PersonajeDeCombate> personajes = new ArrayList<>();
+		
+		for(PersonajeDeCombateDTO pj : pjs){
+			Personaje pjCriatura = this.fabCriaturas.crear(pj.getCriatura());
+			
+			List<Accion> pjAcciones = new ArrayList<>();			
+			for(Acciones a : pj.getAcciones()) {
+				Accion ac = fabAcciones.crear(a);
+				pjAcciones.add(ac);
+			}
+
+			personajes.add(new Aliado(pj.getPosicion(), pjCriatura, pjAcciones));
+		}
+		
+		return personajes;
 	}
 }

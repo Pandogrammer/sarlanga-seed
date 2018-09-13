@@ -33,7 +33,7 @@ public class SistemaDeCombate extends Thread {
 			while(true) {
 				if(prendido) {
 					actualizar();
-					Thread.sleep(segundosPausa); //TODO: hace falta?
+					//Thread.sleep(segundosPausa); //para websocket no hace falta.
 				}
 			}
 		} catch (Exception e) {
@@ -89,14 +89,14 @@ public class SistemaDeCombate extends Thread {
 
 	
 	private void avanzarTurnos() {
-		turnos.sort((pj1, pj2) -> pj2.getEnfriamiento() - pj1.getEnfriamiento());
+		turnos.sort((pj1, pj2) -> pj2.getCansancio() - pj1.getCansancio());
 		int i = 0;
 		PersonajeDeCombate p = null;
 		while(personajeActivo == null && i < turnos.size()) {
 			p = turnos.get(i);
 			
 			if(p.isVivo()) {
-				if(p.getEnfriamiento() <= 0) {
+				if(p.getCansancio() <= 0) {
 					personajeActivo = p;
 					
 					if(personajeActivo instanceof Aliado) {
@@ -194,13 +194,11 @@ public class SistemaDeCombate extends Thread {
 
 	private void victoria() {
 		this.prendido = false;
-		this.interrupt();
 		controlador.victoria();
 	}
 	
 	private void derrota() {
 		this.prendido = false;
-		this.interrupt();
 		controlador.derrota();
 	}
 	

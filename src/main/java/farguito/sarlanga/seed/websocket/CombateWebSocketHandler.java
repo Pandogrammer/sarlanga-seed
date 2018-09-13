@@ -34,31 +34,37 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 	
 			if (request.getId() != null) rta.agregar("id", request.getId());
 			switch (request.getMetodo()) {
+			
 			case "iniciar" : {
 				IniciarDTO dto = mapper.convertValue(request.getData(), IniciarDTO.class);
 				rta.agregar("data", controladores.get(sessionId).iniciar(dto.getPjs(), dto.getNivel()));
 				break;
 			}
+			
 			case "informacion_nivel" : {
 				Map dto = mapper.convertValue(request.getData(), Map.class);
 				rta.agregar("data", controladores.get(sessionId).informacionNivel((Integer) dto.get("nivel"))); 
 				break;
 			}
+			
 			case "creacion_nivel" : {
 				Map dto = mapper.convertValue(request.getData(), Map.class);
 				rta.agregar("data", controladores.get(sessionId).creacionNivel());
 				break;
 			}
+			
 			case "animacion_completada" : {
 				controladores.get(sessionId).animacionCompletada();
 				break;
 			}
+			
 			case "accion_jugador" : {
 				Map dto = mapper.convertValue(request.getData(), Map.class);
 				System.out.println(dto);
 				controladores.get(sessionId).accionJugador((Integer) dto.get("objetivo"), (Integer) dto.get("accion"));
 				break;
 			}
+			
 			default : break;
 			}
 			
@@ -108,13 +114,14 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 		System.out.println("logueado: "+sessionId);
 	}
 	
+	
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		String sessionId = session.getId();
 		
 		//mantener el controller vivo por si se vuelve a loguear?	
-		//controladores.get(sessionId).desconectar();
+		controladores.get(sessionId).desconectar();
 
 		controladores.remove(sessionId);
 

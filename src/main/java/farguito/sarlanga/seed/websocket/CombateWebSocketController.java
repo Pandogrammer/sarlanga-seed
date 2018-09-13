@@ -49,14 +49,6 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		niveles = (RepositorioDeNiveles) SarlangaContext.getAppContext().getBean("repositorioDeNiveles");
 	}
 	
-	public void pasarNivel() {
-		try {
-			if(combate.getEstado() == EstadoDeCombate.VICTORIA)
-				niveles.pisarConAliados(nivelElegido, personajes);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}	
     
 	public void accionJugador(int objetivoId, int accionId) {
 		enviar("combate", "animar_turno", combate.accionar(objetivoId, combate.getPersonajeActivo().getAcciones().get(accionId)));		
@@ -93,7 +85,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 				combate = new SistemaDeCombate();
 				combate.setControlador(this);
 				
-				List<Enemigo> personajesEnemigos = niveles.get(nivel).getEnemigos();
+				List<Enemigo> personajesEnemigos = niveles.get(nivel).crearEnemigos();
 				
 				combate.preparar(personajes, personajesEnemigos);		
 
@@ -179,11 +171,14 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	}
 	
 	public void victoria() {
-		pasarNivel();
+		niveles.pisarConAliados(nivelElegido, personajes);
 		Respuesta respuesta = new Respuesta();
 		respuesta.put("canal", "combate");
 		respuesta.put("metodo", "victoria");
-		handler.enviar(this.sessionId, respuesta);			
+		handler.enviar(this.sessionId, respuesta);	
+
+		combate.interrupt();
+		combate = null;
 		
 	}
 	
@@ -192,6 +187,9 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		respuesta.put("canal", "combate");
 		respuesta.put("metodo", "derrota");
 		handler.enviar(this.sessionId, respuesta);	
+
+		combate.interrupt();
+		combate = null;
 		
 	}
 	

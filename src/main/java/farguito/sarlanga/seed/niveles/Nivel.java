@@ -12,13 +12,10 @@ import farguito.sarlanga.seed.estrategias.EstrategiaDeCombate;
 
 public class Nivel {
 	
-	private Integer id;
-	private Integer siguienteNivel;
-	private Integer esencia;
-	
+	private Integer esencia;	
 	private List<PersonajeDeCombate> personajes = new ArrayList<>();
 	
-	public Nivel(int esencia, List<PersonajeDeCombate> personajes) {
+	public Nivel(Integer esencia, List<PersonajeDeCombate> personajes) {
 		this.esencia = esencia;
 		this.personajes = personajes;
 	}
@@ -33,21 +30,6 @@ public class Nivel {
 		}
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getSiguienteNivel() {
-		return siguienteNivel;
-	}
-
-	public void setSiguienteNivel(Integer siguienteNivel) {
-		this.siguienteNivel = siguienteNivel;
-	}
 
 	public Integer getEsencia() {
 		return esencia;
@@ -57,7 +39,7 @@ public class Nivel {
 		this.esencia = esencia;
 	}
 
-	public List<Enemigo> getEnemigos() {
+	public List<Enemigo> crearEnemigos() {
 		List<Enemigo> enemigos = new ArrayList<>();
 		personajes.stream().forEach(pj -> {
 			enemigos.add(

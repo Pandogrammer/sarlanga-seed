@@ -18,7 +18,7 @@ public abstract class PersonajeDeCombate {
 	private int vida;
 	private int vidaMax;
 	private int velocidad;
-	private int enfriamiento = 0;
+	private int cansancio = 0;
 	private int ataque;
 	private boolean vivo = true;
 	private List<Accion> acciones;
@@ -46,12 +46,12 @@ public abstract class PersonajeDeCombate {
 	}
 
 	public void descansar() {
-		enfriamiento -= velocidad;	
-		if (enfriamiento < 0) enfriamiento = 0; 
+		cansancio -= velocidad;	
+		if (cansancio < 0) cansancio = 0; 
 	}
 
 	public void cansar(int cansancio) {
-		enfriamiento += cansancio;
+		this.cansancio += cansancio;
 	}
 	
 	public int getAtaque() {
@@ -62,12 +62,12 @@ public abstract class PersonajeDeCombate {
 		this.ataque = ataque;
 	}
 
-	public int getEnfriamiento() {
-		return enfriamiento;
+	public int getCansancio() {
+		return cansancio;
 	}
 
-	public void setEnfriamiento(int enfriamiento) {
-		this.enfriamiento = enfriamiento;
+	public void setCansancio(int cansancio) {
+		this.cansancio = cansancio;
 	}
 
 	public int getVida() {

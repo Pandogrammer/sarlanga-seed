@@ -13,6 +13,7 @@ public class Enraizar extends Accion {
 
 	public Enraizar() {
 		this.accion = Acciones.ENRAIZAR;
+		this.melee = false;
 		this.esencia = 1;
 		this.cansancio = 120;
 
