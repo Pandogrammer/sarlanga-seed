@@ -24,6 +24,7 @@ import farguito.sarlanga.seed.combate.Aliado;
 import farguito.sarlanga.seed.combate.Enemigo;
 import farguito.sarlanga.seed.combate.EstadoDeCombate;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
+import farguito.sarlanga.seed.combate.PersonajeDeCombateDTO;
 import farguito.sarlanga.seed.combate.SistemaDeCombate;
 import farguito.sarlanga.seed.criaturas.Criaturas;
 import farguito.sarlanga.seed.criaturas.FabricaDeCriaturas;

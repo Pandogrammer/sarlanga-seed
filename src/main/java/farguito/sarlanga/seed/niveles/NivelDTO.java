@@ -3,7 +3,7 @@ package farguito.sarlanga.seed.niveles;
 import java.util.ArrayList;
 import java.util.List;
 
-import farguito.sarlanga.seed.combate.controlador.PersonajeDeCombateDTO;
+import farguito.sarlanga.seed.combate.PersonajeDeCombateDTO;
 
 public class NivelDTO {
 	

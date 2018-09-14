@@ -2,7 +2,7 @@ package farguito.sarlanga.seed.websocket.objetos;
 
 import java.util.List;
 
-import farguito.sarlanga.seed.combate.controlador.PersonajeDeCombateDTO;
+import farguito.sarlanga.seed.combate.PersonajeDeCombateDTO;
 
 public class IniciarDTO {
 

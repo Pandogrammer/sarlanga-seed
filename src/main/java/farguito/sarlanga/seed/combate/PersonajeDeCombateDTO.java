@@ -1,10 +1,9 @@
-package farguito.sarlanga.seed.combate.controlador;
+package farguito.sarlanga.seed.combate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import farguito.sarlanga.seed.acciones.Acciones;
-import farguito.sarlanga.seed.combate.PersonajeDeCombate;
 import farguito.sarlanga.seed.criaturas.Criaturas;
 
 public class PersonajeDeCombateDTO {

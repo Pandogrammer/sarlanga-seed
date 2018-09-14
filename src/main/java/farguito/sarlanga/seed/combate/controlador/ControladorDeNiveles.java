@@ -1,4 +1,4 @@
-package farguito.sarlanga.seed.niveles;
+package farguito.sarlanga.seed.combate.controlador;
 
 import java.util.List;
 
@@ -18,7 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import farguito.sarlanga.seed.Respuesta;
 import farguito.sarlanga.seed.combate.PersonajeDeCombate;
-import farguito.sarlanga.seed.combate.controlador.PersonajeDeCombateDTO;
+import farguito.sarlanga.seed.combate.PersonajeDeCombateDTO;
+import farguito.sarlanga.seed.niveles.NivelDTO;
+import farguito.sarlanga.seed.niveles.RepositorioDeNiveles;
 
 @CrossOrigin
 @RestController
@@ -65,11 +67,10 @@ public class ControladorDeNiveles {
 	
 	
 	@PostMapping
-	public Respuesta agregar(@RequestBody Integer esencia
-						   , @RequestBody List<PersonajeDeCombateDTO> pjs){
+	public Respuesta agregar(@RequestBody List<PersonajeDeCombateDTO> pjs){
 		Respuesta respuesta = new Respuesta();
 		try {
-			niveles.agregar(esencia, niveles.conversor(pjs));
+			niveles.agregarDTO(pjs);
 			respuesta.exito();
 		} catch (Exception e) {
 			respuesta.agregar("error", e.getMessage());
