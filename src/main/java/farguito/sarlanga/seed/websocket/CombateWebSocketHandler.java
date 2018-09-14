@@ -42,7 +42,6 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 					controlador = controladores.get(oldSessionId);
 					controladores.put(sessionId, controlador);
 
-					controladores.remove(oldSessionId);
 				} else {					
 					controlador = new CombateWebSocketController(sessionId);
 					controlador.setHandler(this);
