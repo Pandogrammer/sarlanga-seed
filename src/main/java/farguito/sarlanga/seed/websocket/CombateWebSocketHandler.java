@@ -23,6 +23,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 
 	private Map<String, WebSocketSession> sesiones = new ConcurrentHashMap<>();
 	private Map<String, CombateWebSocketController> controladores = new ConcurrentHashMap<>();
+	private Map<String, String> sesiones_controladores = new ConcurrentHashMap<>(); //LOL
 	
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
@@ -40,13 +41,16 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 				if (!request.getData().isEmpty()) { //ya tiene sesion, se esta reconectando
 					String oldSessionId = (String) request.getData().get("session_id");
 					controlador = controladores.get(oldSessionId);
-					controladores.put(sessionId, controlador);
+					controlador.setSessionId(sessionId);
+					
+					controladores.remove(oldSessionId);
 
 				} else {					
 					controlador = new CombateWebSocketController(sessionId);
 					controlador.setHandler(this);
-					controladores.put(sessionId, controlador);
 				}
+
+				controladores.put(sessionId, controlador);
 
 				
 				Respuesta sessionIdRta = new Respuesta("session_id", sessionId); //puaj							

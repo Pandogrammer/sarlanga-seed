@@ -215,6 +215,17 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	public void setHandler(CombateWebSocketHandler handler) {
 		this.handler = handler;
 	}
+
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+	
 	
 	
 
