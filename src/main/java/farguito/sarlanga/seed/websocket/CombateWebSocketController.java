@@ -47,6 +47,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	//is this frula? v2.0
 	public CombateWebSocketController(String sessionId) {
 		this.sessionId = sessionId;
+		this.nivelActual = 1;
 		fabCriaturas = (FabricaDeCriaturas) SarlangaContext.getAppContext().getBean("fabricaDeCriaturas");
 		fabAcciones = (FabricaDeAcciones) SarlangaContext.getAppContext().getBean("fabricaDeAcciones");
 		niveles = (RepositorioDeNiveles) SarlangaContext.getAppContext().getBean("repositorioDeNiveles");
