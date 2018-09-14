@@ -71,8 +71,7 @@ public class CombateWebSocketHandler extends TextWebSocketHandler {
 			}
 			
 			case "informacion_nivel" : {
-				respuesta.agregar("data", controladores.get(sessionId).informacionNivel(
-													(Integer) request.getData().get("nivel"))); 
+				respuesta.agregar("data", controladores.get(sessionId).informacionNivel()); 
 				break;
 			}
 			

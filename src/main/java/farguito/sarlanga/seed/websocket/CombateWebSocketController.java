@@ -41,6 +41,9 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	private List<Aliado> personajes;
 	private Integer nivelElegido;
 	
+
+	private Integer nivelActual; //esto despues se va.
+	
 	//is this frula? v2.0
 	public CombateWebSocketController(String sessionId) {
 		this.sessionId = sessionId;
@@ -141,11 +144,24 @@ public class CombateWebSocketController implements ControladorDeCombate {
 		}
 		return respuesta;
 	}
-    
+
 	public Respuesta informacionNivel(Integer nivel) {
 		Respuesta respuesta = new Respuesta();
 		try {
 			int esenciaMax = niveles.get(nivel).getEsencia();
+			respuesta.put("esencia", esenciaMax);
+		} catch (Exception e) {
+			respuesta.error(e);
+			e.printStackTrace();
+		}
+		return respuesta;
+	}
+	
+	public Respuesta informacionNivel() { //este despues se va y pasa usarse el de arriba
+		Respuesta respuesta = new Respuesta();
+		try {
+			int esenciaMax = niveles.get(nivelActual).getEsencia();
+			respuesta.put("nivel", nivelActual);
 			respuesta.put("esencia", esenciaMax);
 		} catch (Exception e) {
 			respuesta.error(e);
@@ -172,6 +188,7 @@ public class CombateWebSocketController implements ControladorDeCombate {
 	
 	public void victoria() {
 		niveles.pisarConAliados(nivelElegido, personajes);
+		nivelActual++;
 		Respuesta respuesta = new Respuesta();
 		respuesta.put("canal", "combate");
 		respuesta.put("metodo", "victoria");

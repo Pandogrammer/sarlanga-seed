@@ -9,7 +9,7 @@ public class Quimera extends Personaje {
 		this.esencia = 3;
 		
 		this.vida = 75;
-		this.ataque = 25;
+		this.ataque = 16;
 		this.velocidad = 15;		
 	}
 
