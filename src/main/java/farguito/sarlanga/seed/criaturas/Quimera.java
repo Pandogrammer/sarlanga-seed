@@ -6,4 +6,5 @@ public class Quimera extends Personaje {
 		super(p);	
 	}
 
+
 }

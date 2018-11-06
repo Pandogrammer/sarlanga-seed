@@ -129,6 +129,14 @@ public abstract class PersonajeDeCombate {
 	public Integer getPosicion() {
 		return posicion;
 	}
+
+	public void preTurno() {
+		
+	}
+
+	public void postTurno() {
+		
+	}
 	
 	
 	

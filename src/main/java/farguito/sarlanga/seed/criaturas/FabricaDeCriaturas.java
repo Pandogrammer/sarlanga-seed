@@ -17,6 +17,8 @@ public class FabricaDeCriaturas {
 		Personaje p = repositorio.obtener(raza);
 		switch(p.getRaza()) {
 		case RATA: return new Rata(p); 
+		case SLIME: return new Slime(p);
+		case IMP: return new Imp(p);
 		case GOLEM: return new Golem(p); 
 		case QUIMERA: return new Quimera(p); 
 		default: return null;

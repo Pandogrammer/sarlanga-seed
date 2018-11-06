@@ -15,12 +15,17 @@ public class RepositorioDeCriaturas {
 	
 	private Map<String, Personaje> criaturas;
 	
+	
 	@PostConstruct
 	private void init() {
 		criaturas = new HashMap<>();
 
 		criaturas.put("RATA", new Personaje(Criaturas.RATA, 30, 12, 10, 1));
+		criaturas.put("SLIME", new Personaje(Criaturas.SLIME, 40, 6, 12, 1));
+
+		criaturas.put("IMP", new Personaje(Criaturas.IMP, 40, 14, 12, 2));
 		criaturas.put("GOLEM", new Personaje(Criaturas.GOLEM, 60, 8, 14, 2));
+		
 		criaturas.put("QUIMERA", new Personaje(Criaturas.QUIMERA, 50, 10, 20, 3));
 		
 	}

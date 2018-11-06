@@ -1,9 +1,9 @@
 package farguito.sarlanga.seed.criaturas;
 
-public class Rata extends Personaje {
+public class Imp extends Personaje {
 
 	
-	public Rata(Personaje p) {
+	public Imp(Personaje p) {
 		super(p);		
 	}
 	

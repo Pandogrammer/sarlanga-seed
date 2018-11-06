@@ -82,6 +82,7 @@ public class SistemaDeCombate extends Thread {
 		
 		log((String) resultado.get("mensaje"));
 		
+		personajeActivo.postTurno();		
 		personajeActivo = null;
 		
 		return resultado;
@@ -98,6 +99,8 @@ public class SistemaDeCombate extends Thread {
 			if(p.isVivo()) {
 				if(p.getCansancio() <= 0) {
 					personajeActivo = p;
+					p.preTurno();
+					
 					
 					if(personajeActivo instanceof Aliado) {
 						estado = EstadoDeCombate.TURNO_JUGADOR;

@@ -26,8 +26,7 @@ public class Personaje {
 		this.ataque = p.ataque;
 		this.esencia = p.esencia;
 	}	
-	
-	
+		
 	public Criaturas getRaza() {
 		return raza;
 	}
