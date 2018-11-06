@@ -10,6 +10,22 @@ public class Personaje {
 	
 	public Personaje() {}
 	
+	public Personaje(Criaturas raza, int vida, int velocidad, int ataque, int esencia) {
+		super();
+		this.raza = raza;
+		this.vida = vida;
+		this.velocidad = velocidad;
+		this.ataque = ataque;
+		this.esencia = esencia;
+	}
+
+	public Personaje(Personaje p) {
+		this.raza = p.raza;
+		this.vida = p.vida;
+		this.velocidad = p.velocidad;
+		this.ataque = p.ataque;
+		this.esencia = p.esencia;
+	}	
 	
 	
 	public Criaturas getRaza() {
@@ -39,9 +55,9 @@ public class Personaje {
 	public int getEsencia() {
 		return esencia;
 	}
-	
-	
-	
+	public void setEsencia(int esencia) {
+		this.esencia = esencia;
+	}	
 	
 
 }
